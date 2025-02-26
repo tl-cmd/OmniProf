@@ -69,54 +69,52 @@ export function ClassesOverview() {
           ) : (
             classes.map((cls) => (
               <li key={cls.id}>
-                <Link href={`/classes/${cls.id}`}>
-                  <a className="block hover:bg-gray-50">
-                    <div className="px-4 py-4 sm:px-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10 bg-primary-100 rounded-full flex items-center justify-center">
-                            <span className="text-primary-600 font-semibold">{cls.level}</span>
-                          </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
-                              {cls.level} - {cls.subject}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              {cls.studentCount} élèves
-                            </div>
-                          </div>
+                <div className="block hover:bg-gray-50 cursor-pointer" onClick={() => window.location.href = `/classes/${cls.id}`}>
+                  <div className="px-4 py-4 sm:px-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10 bg-primary-100 rounded-full flex items-center justify-center">
+                          <span className="text-primary-600 font-semibold">{cls.level}</span>
                         </div>
-                        <div>
-                          <div className="ml-2 flex-shrink-0 flex">
-                            <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              {cls.progress > 90 
-                                ? "Programme terminé" 
-                                : cls.progress > 70 
-                                  ? "Nouvelle évaluation à prévoir" 
-                                  : "En cours de progression"}
-                            </p>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">
+                            {cls.level} - {cls.subject}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {cls.studentCount} élèves
                           </div>
                         </div>
                       </div>
-                      <div className="mt-2 sm:flex sm:justify-between">
-                        <div className="sm:flex">
-                          <p className="flex items-center text-sm text-gray-500">
-                            <CheckCircle className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-                            <span>Progression: <span>{cls.progress}%</span></span>
-                          </p>
-                        </div>
-                        <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                          <Calendar className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-                          <p>
-                            Prochain cours: <time dateTime={cls.nextSessionDate?.toISOString()}>
-                              {formatNextSession(cls.nextSessionDate)}
-                            </time>
+                      <div>
+                        <div className="ml-2 flex-shrink-0 flex">
+                          <p className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            {cls.progress > 90 
+                              ? "Programme terminé" 
+                              : cls.progress > 70 
+                                ? "Nouvelle évaluation à prévoir" 
+                                : "En cours de progression"}
                           </p>
                         </div>
                       </div>
                     </div>
-                  </a>
-                </Link>
+                    <div className="mt-2 sm:flex sm:justify-between">
+                      <div className="sm:flex">
+                        <p className="flex items-center text-sm text-gray-500">
+                          <CheckCircle className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
+                          <span>Progression: <span>{cls.progress}%</span></span>
+                        </p>
+                      </div>
+                      <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                        <Calendar className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
+                        <p>
+                          Prochain cours: <time dateTime={cls.nextSessionDate?.toISOString()}>
+                            {formatNextSession(cls.nextSessionDate)}
+                          </time>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </li>
             ))
           )}
