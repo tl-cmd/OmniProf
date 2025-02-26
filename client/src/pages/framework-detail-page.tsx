@@ -5,6 +5,9 @@ import { CompetencyFramework, Competency, Knowledge, EvaluationCriteria, InsertK
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Plus, Edit, Trash, BookOpen, List, CheckCircle2, PlusCircle, Info, AlignLeft, Sparkles } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -257,6 +260,7 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
         id: newId,
         name: values.name,
         description: values.description,
+        code: values.code || null,
         frameworkId: framework.id,
         createdAt: new Date(),
       };
@@ -284,6 +288,204 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors de l'ajout de la compétence.",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  // Formulaire d'ajout de savoir
+  const addKnowledgeForm = useForm<KnowledgeFormValues>({
+    resolver: zodResolver(knowledgeSchema),
+    defaultValues: {
+      name: "",
+      taxonomicLevel: 1,
+      competencyId: selectedCompetency?.id || 0,
+    },
+    values: {
+      name: "",
+      taxonomicLevel: 1,
+      competencyId: selectedCompetency?.id || 0,
+    }
+  });
+  
+  // Formulaire d'ajout de critère
+  const addCriteriaForm = useForm<CriteriaFormValues>({
+    resolver: zodResolver(criteriaSchema),
+    defaultValues: {
+      description: "",
+      type: "technical",
+      competencyId: selectedCompetency?.id || 0,
+    },
+    values: {
+      description: "",
+      type: "technical",
+      competencyId: selectedCompetency?.id || 0,
+    }
+  });
+  
+  // Fonction pour mettre à jour les formulaires lors de la sélection d'une compétence
+  useEffect(() => {
+    if (selectedCompetency) {
+      addKnowledgeForm.setValue("competencyId", selectedCompetency.id);
+      addCriteriaForm.setValue("competencyId", selectedCompetency.id);
+    }
+  }, [selectedCompetency, addKnowledgeForm, addCriteriaForm]);
+  
+  // Ajouter un savoir
+  const handleAddKnowledge = async (values: KnowledgeFormValues) => {
+    try {
+      if (!selectedCompetency) return;
+      
+      const newId = Date.now() + Math.floor(Math.random() * 1000);
+      
+      const newKnowledge: Knowledge = {
+        id: newId,
+        name: values.name,
+        taxonomicLevel: values.taxonomicLevel,
+        competencyId: values.competencyId,
+        createdAt: new Date(),
+      };
+      
+      const storedKnowledge = localStorage.getItem('knowledge');
+      const existingKnowledge: Knowledge[] = storedKnowledge 
+        ? JSON.parse(storedKnowledge) 
+        : [];
+      
+      const updatedKnowledge = [...existingKnowledge, newKnowledge];
+      
+      localStorage.setItem('knowledge', JSON.stringify(updatedKnowledge));
+      
+      setKnowledgeItems([...knowledgeItems, newKnowledge]);
+      
+      toast({
+        title: "Savoir associé ajouté",
+        description: `Le savoir "${values.name}" a été ajouté à la compétence.`,
+      });
+      
+      addKnowledgeForm.reset({
+        name: "",
+        taxonomicLevel: 1,
+        competencyId: selectedCompetency.id,
+      });
+      
+      setIsAddingKnowledge(false);
+    } catch (error) {
+      console.error("Erreur lors de l'ajout du savoir:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'ajout du savoir.",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  // Ajouter un critère d'évaluation
+  const handleAddCriteria = async (values: CriteriaFormValues) => {
+    try {
+      if (!selectedCompetency) return;
+      
+      const newId = Date.now() + Math.floor(Math.random() * 1000);
+      
+      const newCriteria: EvaluationCriteria = {
+        id: newId,
+        description: values.description,
+        type: values.type,
+        competencyId: values.competencyId,
+        createdAt: new Date(),
+      };
+      
+      const storedCriteria = localStorage.getItem('evaluationCriteria');
+      const existingCriteria: EvaluationCriteria[] = storedCriteria 
+        ? JSON.parse(storedCriteria) 
+        : [];
+      
+      const updatedCriteria = [...existingCriteria, newCriteria];
+      
+      localStorage.setItem('evaluationCriteria', JSON.stringify(updatedCriteria));
+      
+      setEvaluationCriteria([...evaluationCriteria, newCriteria]);
+      
+      toast({
+        title: "Critère d'évaluation ajouté",
+        description: `Le critère d'évaluation a été ajouté à la compétence.`,
+      });
+      
+      addCriteriaForm.reset({
+        description: "",
+        type: "technical",
+        competencyId: selectedCompetency.id,
+      });
+      
+      setIsAddingCriteria(false);
+    } catch (error) {
+      console.error("Erreur lors de l'ajout du critère:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'ajout du critère.",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  // Supprimer un savoir
+  const handleDeleteKnowledge = async (knowledgeId: number) => {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer ce savoir associé ?")) return;
+    
+    try {
+      const storedKnowledge = localStorage.getItem('knowledge');
+      const existingKnowledge: Knowledge[] = storedKnowledge 
+        ? JSON.parse(storedKnowledge) 
+        : [];
+      
+      const updatedKnowledge = existingKnowledge.filter(
+        k => k.id !== knowledgeId
+      );
+      
+      localStorage.setItem('knowledge', JSON.stringify(updatedKnowledge));
+      
+      setKnowledgeItems(knowledgeItems.filter(k => k.id !== knowledgeId));
+      
+      toast({
+        title: "Savoir supprimé",
+        description: "Le savoir associé a été supprimé avec succès.",
+      });
+    } catch (error) {
+      console.error("Erreur lors de la suppression du savoir:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la suppression du savoir.",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  // Supprimer un critère
+  const handleDeleteCriteria = async (criteriaId: number) => {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer ce critère d'évaluation ?")) return;
+    
+    try {
+      const storedCriteria = localStorage.getItem('evaluationCriteria');
+      const existingCriteria: EvaluationCriteria[] = storedCriteria 
+        ? JSON.parse(storedCriteria) 
+        : [];
+      
+      const updatedCriteria = existingCriteria.filter(
+        c => c.id !== criteriaId
+      );
+      
+      localStorage.setItem('evaluationCriteria', JSON.stringify(updatedCriteria));
+      
+      setEvaluationCriteria(evaluationCriteria.filter(c => c.id !== criteriaId));
+      
+      toast({
+        title: "Critère supprimé",
+        description: "Le critère d'évaluation a été supprimé avec succès.",
+      });
+    } catch (error) {
+      console.error("Erreur lors de la suppression du critère:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la suppression du critère.",
         variant: "destructive",
       });
     }
@@ -445,25 +647,232 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-6">
             {competencies.map((competency) => (
-              <Card key={competency.id}>
-                <CardHeader>
-                  <CardTitle>{competency.name}</CardTitle>
+              <Card key={competency.id} className="overflow-hidden">
+                <CardHeader className="bg-gray-50 pb-2">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        {competency.code && (
+                          <span className="text-sm font-mono px-2 py-1 bg-primary/10 text-primary rounded">
+                            {competency.code}
+                          </span>
+                        )}
+                        <CardTitle>{competency.name}</CardTitle>
+                      </div>
+                      <CardDescription className="mt-2">
+                        {competency.description}
+                      </CardDescription>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      onClick={() => handleDeleteCompetency(competency.id)}
+                    >
+                      <Trash className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-gray-700">{competency.description}</p>
+                <CardContent className="p-0">
+                  <Tabs defaultValue="knowledge" className="w-full">
+                    <TabsList className="w-full rounded-none grid grid-cols-3">
+                      <TabsTrigger value="knowledge" className="flex items-center gap-1">
+                        <BookOpen className="h-4 w-4" />
+                        <span className="hidden sm:inline">Savoirs associés</span>
+                        <span className="inline sm:hidden">Savoirs</span>
+                        <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded-full">
+                          {getCompetencyKnowledge(competency.id).length}
+                        </span>
+                      </TabsTrigger>
+                      <TabsTrigger value="technical" className="flex items-center gap-1">
+                        <List className="h-4 w-4" />
+                        <span className="hidden sm:inline">Critères techniques</span>
+                        <span className="inline sm:hidden">Techniques</span>
+                        <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded-full">
+                          {getTechnicalCriteria(competency.id).length}
+                        </span>
+                      </TabsTrigger>
+                      <TabsTrigger value="behavior" className="flex items-center gap-1">
+                        <CheckCircle2 className="h-4 w-4" />
+                        <span className="hidden sm:inline">Savoir-être</span>
+                        <span className="inline sm:hidden">Savoir-être</span>
+                        <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded-full">
+                          {getBehaviorCriteria(competency.id).length}
+                        </span>
+                      </TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="knowledge" className="p-4 min-h-[180px]">
+                      {getCompetencyKnowledge(competency.id).length === 0 ? (
+                        <div className="text-center py-6 text-gray-500">
+                          <BookOpen className="h-12 w-12 mx-auto text-gray-300 mb-2" />
+                          <p>Aucun savoir associé</p>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="mt-2"
+                            onClick={() => {
+                              setSelectedCompetency(competency);
+                              setIsAddingKnowledge(true);
+                            }}
+                          >
+                            <PlusCircle className="h-4 w-4 mr-2" />
+                            Ajouter un savoir
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center mb-2">
+                            <h4 className="font-semibold text-sm">Liste des savoirs associés</h4>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => {
+                                setSelectedCompetency(competency);
+                                setIsAddingKnowledge(true);
+                              }}
+                            >
+                              <PlusCircle className="h-4 w-4 mr-2" />
+                              Ajouter
+                            </Button>
+                          </div>
+                          <ul className="space-y-2">
+                            {getCompetencyKnowledge(competency.id).map((knowledge) => (
+                              <li key={knowledge.id} className="bg-gray-50 p-3 rounded-md flex justify-between items-start">
+                                <div>
+                                  <p className="font-medium">{knowledge.name}</p>
+                                  {knowledge.taxonomicLevel && (
+                                    <div className="flex items-center mt-1">
+                                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                                        Niveau taxonomique: {knowledge.taxonomicLevel}
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  className="text-red-500 h-8 w-8 p-0"
+                                  onClick={() => handleDeleteKnowledge(knowledge.id)}
+                                >
+                                  <Trash className="h-4 w-4" />
+                                </Button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </TabsContent>
+                    
+                    <TabsContent value="technical" className="p-4 min-h-[180px]">
+                      {getTechnicalCriteria(competency.id).length === 0 ? (
+                        <div className="text-center py-6 text-gray-500">
+                          <List className="h-12 w-12 mx-auto text-gray-300 mb-2" />
+                          <p>Aucun critère technique défini</p>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="mt-2"
+                            onClick={() => {
+                              setSelectedCompetency(competency);
+                              setIsAddingCriteria(true);
+                            }}
+                          >
+                            <PlusCircle className="h-4 w-4 mr-2" />
+                            Ajouter un critère
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center mb-2">
+                            <h4 className="font-semibold text-sm">Critères d'évaluation techniques</h4>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => {
+                                setSelectedCompetency(competency);
+                                setIsAddingCriteria(true);
+                              }}
+                            >
+                              <PlusCircle className="h-4 w-4 mr-2" />
+                              Ajouter
+                            </Button>
+                          </div>
+                          <ul className="space-y-2">
+                            {getTechnicalCriteria(competency.id).map((criteria) => (
+                              <li key={criteria.id} className="bg-gray-50 p-3 rounded-md flex justify-between items-start">
+                                <p>{criteria.description}</p>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  className="text-red-500 h-8 w-8 p-0"
+                                  onClick={() => handleDeleteCriteria(criteria.id)}
+                                >
+                                  <Trash className="h-4 w-4" />
+                                </Button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </TabsContent>
+                    
+                    <TabsContent value="behavior" className="p-4 min-h-[180px]">
+                      {getBehaviorCriteria(competency.id).length === 0 ? (
+                        <div className="text-center py-6 text-gray-500">
+                          <CheckCircle2 className="h-12 w-12 mx-auto text-gray-300 mb-2" />
+                          <p>Aucun critère comportemental défini</p>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="mt-2"
+                            onClick={() => {
+                              setSelectedCompetency(competency);
+                              setIsAddingCriteria(true);
+                            }}
+                          >
+                            <PlusCircle className="h-4 w-4 mr-2" />
+                            Ajouter un critère
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <div className="flex justify-between items-center mb-2">
+                            <h4 className="font-semibold text-sm">Critères d'évaluation comportementaux</h4>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => {
+                                setSelectedCompetency(competency);
+                                setIsAddingCriteria(true);
+                              }}
+                            >
+                              <PlusCircle className="h-4 w-4 mr-2" />
+                              Ajouter
+                            </Button>
+                          </div>
+                          <ul className="space-y-2">
+                            {getBehaviorCriteria(competency.id).map((criteria) => (
+                              <li key={criteria.id} className="bg-gray-50 p-3 rounded-md flex justify-between items-start">
+                                <p>{criteria.description}</p>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  className="text-red-500 h-8 w-8 p-0"
+                                  onClick={() => handleDeleteCriteria(criteria.id)}
+                                >
+                                  <Trash className="h-4 w-4" />
+                                </Button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </TabsContent>
+                  </Tabs>
                 </CardContent>
-                <CardFooter className="pt-0 flex justify-end">
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleDeleteCompetency(competency.id)}
-                  >
-                    <Trash className="h-4 w-4 mr-2" />
-                    Supprimer
-                  </Button>
-                </CardFooter>
               </Card>
             ))}
           </div>
@@ -531,6 +940,20 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
             <form onSubmit={addCompetencyForm.handleSubmit(handleAddCompetency)} className="space-y-6">
               <FormField
                 control={addCompetencyForm.control}
+                name="code"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Code (optionnel)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="C01" {...field} value={field.value || ""} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={addCompetencyForm.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
@@ -542,6 +965,7 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
                   </FormItem>
                 )}
               />
+              
               <FormField
                 control={addCompetencyForm.control}
                 name="description"
@@ -558,8 +982,155 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
                   </FormItem>
                 )}
               />
+              
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setIsAddingCompetency(false)}>
+                  Annuler
+                </Button>
+                <Button type="submit">Ajouter</Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Dialogue d'ajout de savoir associé */}
+      <Dialog open={isAddingKnowledge} onOpenChange={setIsAddingKnowledge}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Ajouter un savoir associé</DialogTitle>
+            <DialogDescription>
+              {selectedCompetency ? (
+                <>
+                  Ajoutez un savoir associé à la compétence <span className="font-medium">{selectedCompetency.name}</span>.
+                </>
+              ) : (
+                "Ajoutez un savoir associé à cette compétence."
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...addKnowledgeForm}>
+            <form onSubmit={addKnowledgeForm.handleSubmit(handleAddKnowledge)} className="space-y-6">
+              <FormField
+                control={addKnowledgeForm.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nom du savoir</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Théorie de la communication" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={addKnowledgeForm.control}
+                name="taxonomicLevel"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Niveau taxonomique</FormLabel>
+                    <div className="space-y-2">
+                      <RadioGroup
+                        onValueChange={(value) => field.onChange(parseInt(value))}
+                        defaultValue={field.value.toString()}
+                        className="flex flex-col space-y-1"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="1" id="level-1" />
+                          <Label htmlFor="level-1" className="font-normal">Niveau 1 - Connaissance</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="2" id="level-2" />
+                          <Label htmlFor="level-2" className="font-normal">Niveau 2 - Compréhension</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="3" id="level-3" />
+                          <Label htmlFor="level-3" className="font-normal">Niveau 3 - Application</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setIsAddingKnowledge(false)}>
+                  Annuler
+                </Button>
+                <Button type="submit">Ajouter</Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Dialogue d'ajout de critère d'évaluation */}
+      <Dialog open={isAddingCriteria} onOpenChange={setIsAddingCriteria}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Ajouter un critère d'évaluation</DialogTitle>
+            <DialogDescription>
+              {selectedCompetency ? (
+                <>
+                  Ajoutez un critère d'évaluation à la compétence <span className="font-medium">{selectedCompetency.name}</span>.
+                </>
+              ) : (
+                "Ajoutez un critère d'évaluation à cette compétence."
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...addCriteriaForm}>
+            <form onSubmit={addCriteriaForm.handleSubmit(handleAddCriteria)} className="space-y-6">
+              <FormField
+                control={addCriteriaForm.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Type de critère</FormLabel>
+                    <div className="space-y-2">
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="technical" id="type-technical" />
+                          <Label htmlFor="type-technical" className="font-normal">Technique</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="behavior" id="type-behavior" />
+                          <Label htmlFor="type-behavior" className="font-normal">Comportemental (savoir-être)</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={addCriteriaForm.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description du critère</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="L'élève respecte les règles de présentation et de typographie..." 
+                        {...field} 
+                        className="min-h-24"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setIsAddingCriteria(false)}>
                   Annuler
                 </Button>
                 <Button type="submit">Ajouter</Button>
