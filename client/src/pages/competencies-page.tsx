@@ -246,14 +246,19 @@ export default function CompetenciesPage({ teacherInfo }: CompetenciesPageProps)
                         <p className="text-sm text-muted-foreground">{framework.description}</p>
                         <div className="mt-4 flex justify-between">
                           <Button variant="outline" size="sm" asChild>
-                            <Link href={`/competencies?framework=${framework.id}`}>
-                              Voir les compétences
+                            <Link href={`/competencies/framework/${framework.id}`}>
+                              Gérer le référentiel
                             </Link>
                           </Button>
-                          <Button variant="ghost" size="sm" asChild>
-                            <Link href={`/competencies/frameworks/${framework.id}/edit`}>
-                              Modifier
-                            </Link>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => {
+                              setActiveTab("competencies");
+                              setSelectedFramework(framework.id.toString());
+                            }}
+                          >
+                            Voir les compétences
                           </Button>
                         </div>
                       </CardContent>

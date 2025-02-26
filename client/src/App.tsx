@@ -7,6 +7,7 @@ import NewClassPage from "@/pages/new-class-page";
 import CompetenciesPage from "@/pages/competencies-page";
 import NewFrameworkPage from "@/pages/new-framework-page";
 import NewCompetencyPage from "@/pages/new-competency-page";
+import FrameworkDetailPage from "@/pages/framework-detail-page";
 import SequencesPage from "@/pages/sequences-page";
 import NewSequencePage from "@/pages/new-sequence-page";
 import ResourcesPage from "@/pages/resources-page";
@@ -204,6 +205,16 @@ function Router() {
         path="/competencies/new" 
         component={() => 
           <ProtectedRoute path="/competencies/new" component={NewCompetencyPage} teacher={teacher} />
+        } 
+      />
+      <Route 
+        path="/competencies/framework/:id" 
+        component={(params: { id?: string }) => 
+          <ProtectedRoute 
+            path="/competencies/framework/:id" 
+            component={(props) => <FrameworkDetailPage {...props} frameworkId={params.id} />} 
+            teacher={teacher} 
+          />
         } 
       />
       
