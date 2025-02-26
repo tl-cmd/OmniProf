@@ -57,14 +57,14 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
   const [isEditingFramework, setIsEditingFramework] = useState(false);
   const [isAddingCompetency, setIsAddingCompetency] = useState(false);
   const { toast } = useToast();
-  const [_, navigate] = useLocation();
+  const [_, setLocation] = useLocation();
 
   // Récupérer le référentiel et ses compétences
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (!frameworkId) {
-          navigate("/competencies" as any);
+          setLocation("/competencies");
           return;
         }
 
@@ -82,7 +82,7 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
             description: "Le référentiel demandé n'existe pas.",
             variant: "destructive",
           });
-          navigate("/competencies" as any);
+          setLocation("/competencies");
           return;
         }
         
@@ -112,7 +112,7 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
     };
     
     fetchData();
-  }, [frameworkId, navigate, toast]);
+  }, [frameworkId, setLocation, toast]);
 
   // Formulaire d'édition du référentiel
   const editFrameworkForm = useForm<{
@@ -296,7 +296,7 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
         description: "Le référentiel et toutes ses compétences ont été supprimés.",
       });
       
-      navigate("/competencies" as any);
+      setLocation("/competencies");
     } catch (error) {
       console.error("Erreur lors de la suppression du référentiel:", error);
       toast({
@@ -325,7 +325,7 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
           <p className="text-gray-600 mb-6">
             Le référentiel que vous recherchez n'existe pas ou a été supprimé.
           </p>
-          <Button onClick={() => navigate("/competencies" as any)}>
+          <Button onClick={() => setLocation("/competencies")}>
             Retour à la liste des référentiels
           </Button>
         </div>

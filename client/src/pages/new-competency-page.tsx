@@ -220,7 +220,7 @@ export default function NewCompetencyPage({ teacherInfo }: NewCompetencyPageProp
                 <Button 
                   type="button" 
                   variant="outline" 
-                  onClick={() => navigate("/competencies" as any)}
+                  onClick={() => setLocation("/competencies")}
                 >
                   Annuler
                 </Button>
