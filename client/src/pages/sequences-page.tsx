@@ -1,10 +1,9 @@
 import { AppLayout } from "@/components/layout/app-layout";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Sequence, Class } from "@shared/schema";
-import { Plus, Search, Calendar, Clock, Users, Check, Play, Archive } from "lucide-react";
+import { Plus, Search, Calendar, Users, Check, Play, Archive } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,85 +12,135 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
+import { Teacher } from "../App";
 
-export default function SequencesPage() {
+interface SequencesPageProps {
+  teacherInfo: Teacher;
+}
+
+export default function SequencesPage({ teacherInfo }: SequencesPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedClass, setSelectedClass] = useState<string>("all");
   const [activeTab, setActiveTab] = useState<"active" | "draft" | "completed">("active");
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [sequences, setSequences] = useState<Sequence[]>([]);
+  const [isLoadingClasses, setIsLoadingClasses] = useState(true);
+  const [isLoadingSequences, setIsLoadingSequences] = useState(true);
+  const { toast } = useToast();
   
-  // Fetch classes
-  const { data: classes, isLoading: isLoadingClasses } = useQuery<Class[]>({
-    queryKey: ['/api/classes'],
-  });
-  
-  // Fetch sequences
-  const { data: sequences, isLoading: isLoadingSequences } = useQuery<Sequence[]>({
-    queryKey: ['/api/sequences', { classId: selectedClass !== "all" ? parseInt(selectedClass) : undefined, status: activeTab }],
-    queryFn: async () => {
-      // In a real app, we would fetch from the API based on the selected class and status
-      // For now, we'll return mock data
-      const now = new Date();
-      return [
-        { 
-          id: 1, 
-          title: "Théorème de Pythagore", 
-          description: "Introduction et applications du théorème de Pythagore", 
-          classId: 1, 
-          teacherId: 1, 
-          startDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 10), 
-          endDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 10), 
-          status: "active", 
-          competencyIds: [4],
-          createdAt: new Date() 
-        },
-        { 
-          id: 2, 
-          title: "Nombres relatifs", 
-          description: "Opérations sur les nombres relatifs", 
-          classId: 2, 
-          teacherId: 1, 
-          startDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 5), 
-          endDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 15), 
-          status: "active", 
-          competencyIds: [2],
-          createdAt: new Date() 
-        },
-        { 
-          id: 3, 
-          title: "Fractions et proportionnalité", 
-          description: "Calculs avec des fractions et applications à la proportionnalité", 
-          classId: 3, 
-          teacherId: 1, 
-          startDate: null, 
-          endDate: null, 
-          status: "draft", 
-          competencyIds: [3],
-          createdAt: new Date() 
-        },
-        { 
-          id: 4, 
-          title: "Équations du premier degré", 
-          description: "Résolution d'équations à une inconnue", 
-          classId: 1, 
-          teacherId: 1, 
-          startDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 40), 
-          endDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 20), 
-          status: "completed", 
-          competencyIds: [6],
-          createdAt: new Date() 
+  // Charger les classes depuis le localStorage
+  useEffect(() => {
+    const fetchClasses = () => {
+      setIsLoadingClasses(true);
+      try {
+        // Récupérer les classes du localStorage
+        const storedClasses = localStorage.getItem('classes');
+        if (storedClasses) {
+          const parsedClasses = JSON.parse(storedClasses) as Class[];
+          // Filtrer les classes qui appartiennent à cet utilisateur
+          const teacherClasses = parsedClasses.filter(cls => 
+            String(cls.teacherId) === teacherInfo.fullName
+          );
+          setClasses(teacherClasses);
+        } else {
+          // Aucune classe trouvée, initialiser un tableau vide
+          setClasses([]);
         }
-      ].filter(seq => {
-        // Filter by status
-        if (activeTab !== 'all' && seq.status !== activeTab) return false;
-        // Filter by class if selected
-        if (selectedClass !== 'all' && seq.classId !== parseInt(selectedClass)) return false;
-        return true;
-      });
-    }
-  });
+      } catch (error) {
+        console.error("Erreur lors du chargement des classes:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les classes.",
+          variant: "destructive",
+        });
+        setClasses([]);
+      } finally {
+        setIsLoadingClasses(false);
+      }
+    };
+    
+    fetchClasses();
+  }, [teacherInfo.fullName, toast]);
+  
+  // Charger les séquences depuis le localStorage
+  useEffect(() => {
+    const fetchSequences = () => {
+      setIsLoadingSequences(true);
+      try {
+        // Récupérer les séquences du localStorage
+        const storedSequences = localStorage.getItem('sequences');
+        
+        if (storedSequences) {
+          const parsedSequences = JSON.parse(storedSequences) as Sequence[];
+          // Filtrer les séquences qui appartiennent à cet utilisateur
+          let filteredSequences = parsedSequences.filter(seq => 
+            String(seq.teacherId) === teacherInfo.fullName
+          );
+          
+          // Filtrer par statut
+          if (activeTab !== 'all') {
+            filteredSequences = filteredSequences.filter(seq => seq.status === activeTab);
+          }
+          
+          // Filtrer par classe si nécessaire
+          if (selectedClass !== 'all') {
+            filteredSequences = filteredSequences.filter(seq => 
+              seq.classId === parseInt(selectedClass)
+            );
+          }
+          
+          setSequences(filteredSequences);
+        } else {
+          // Aucune séquence trouvée, initialiser un tableau vide
+          setSequences([]);
+          
+          // Si nous avons des classes, créons quelques séquences d'exemple
+          if (classes.length > 0 && !localStorage.getItem('sequences_created')) {
+            const now = new Date();
+            const defaultSequences: Sequence[] = [
+              { 
+                id: Date.now(),
+                title: "Introduction à la matière", 
+                description: `Introduction générale à ${teacherInfo.subject}`, 
+                classId: classes[0].id, 
+                teacherId: teacherInfo.fullName as unknown as number, 
+                startDate: new Date(now.getFullYear(), now.getMonth(), now.getDate()), 
+                endDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 14), 
+                status: "active", 
+                competencyIds: [],
+                createdAt: new Date() 
+              }
+            ];
+            
+            localStorage.setItem('sequences', JSON.stringify(defaultSequences));
+            localStorage.setItem('sequences_created', 'true');
+            setSequences(defaultSequences);
+            
+            toast({
+              title: "Séquence créée",
+              description: "Une séquence d'exemple a été créée pour vous.",
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des séquences:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les séquences.",
+          variant: "destructive",
+        });
+        setSequences([]);
+      } finally {
+        setIsLoadingSequences(false);
+      }
+    };
+    
+    fetchSequences();
+  }, [classes, selectedClass, activeTab, teacherInfo.fullName, teacherInfo.subject, toast]);
   
   // Filter sequences by search query
-  const filteredSequences = sequences?.filter(sequence => 
+  const filteredSequences = sequences.filter(sequence => 
     sequence.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
     (sequence.description && sequence.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );

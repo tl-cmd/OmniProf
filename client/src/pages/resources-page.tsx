@@ -1,10 +1,9 @@
 import { AppLayout } from "@/components/layout/app-layout";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Resource, Sequence } from "@shared/schema";
-import { Plus, Search, FileText, Link as LinkIcon, File, FileImage, Play, Video, Filter } from "lucide-react";
+import { Plus, Search, FileText, Link as LinkIcon, File, FileImage, Video } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,97 +12,151 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { useToast } from "@/hooks/use-toast";
+import { Teacher } from "../App";
 
-export default function ResourcesPage() {
+interface ResourcesPageProps {
+  teacherInfo: Teacher;
+}
+
+export default function ResourcesPage({ teacherInfo }: ResourcesPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedSequence, setSelectedSequence] = useState<string>("all");
   const [activeTab, setActiveTab] = useState<"all" | "documents" | "links" | "exercises">("all");
+  const [sequences, setSequences] = useState<Sequence[]>([]);
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [isLoadingSequences, setIsLoadingSequences] = useState(true);
+  const [isLoadingResources, setIsLoadingResources] = useState(true);
+  const { toast } = useToast();
   
-  // Fetch sequences
-  const { data: sequences, isLoading: isLoadingSequences } = useQuery<Sequence[]>({
-    queryKey: ['/api/sequences'],
-  });
+  // Charger les séquences depuis le localStorage
+  useEffect(() => {
+    const fetchSequences = () => {
+      setIsLoadingSequences(true);
+      try {
+        // Récupérer les séquences du localStorage
+        const storedSequences = localStorage.getItem('sequences');
+        if (storedSequences) {
+          const parsedSequences = JSON.parse(storedSequences) as Sequence[];
+          // Filtrer les séquences qui appartiennent à cet utilisateur
+          const teacherSequences = parsedSequences.filter(seq => 
+            String(seq.teacherId) === teacherInfo.fullName
+          );
+          setSequences(teacherSequences);
+        } else {
+          // Aucune séquence trouvée, initialiser un tableau vide
+          setSequences([]);
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des séquences:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les séquences.",
+          variant: "destructive",
+        });
+        setSequences([]);
+      } finally {
+        setIsLoadingSequences(false);
+      }
+    };
+    
+    fetchSequences();
+  }, [teacherInfo.fullName, toast]);
   
-  // Fetch resources
-  const { data: resources, isLoading: isLoadingResources } = useQuery<Resource[]>({
-    queryKey: ['/api/resources', { 
-      sequenceId: selectedSequence !== "all" ? parseInt(selectedSequence) : undefined,
-      type: selectedType !== "all" ? selectedType : undefined
-    }],
-    queryFn: async () => {
-      // In a real app, we would fetch from the API
-      // For now, we'll return mock data
-      const now = new Date();
-      return [
-        { 
-          id: 1, 
-          name: "Cours sur le théorème de Pythagore", 
-          type: "document", 
-          url: null, 
-          content: "Contenu du cours sur le théorème de Pythagore...", 
-          teacherId: 1, 
-          sequenceId: 1, 
-          createdAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 10)
-        },
-        { 
-          id: 2, 
-          name: "Exercices d'application - Pythagore", 
-          type: "exercise", 
-          url: null, 
-          content: "Série d'exercices sur l'application du théorème de Pythagore...", 
-          teacherId: 1, 
-          sequenceId: 1, 
-          createdAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 8)
-        },
-        { 
-          id: 3, 
-          name: "Vidéo explicative - Théorème de Pythagore", 
-          type: "link", 
-          url: "https://www.youtube.com/watch?v=example", 
-          content: null, 
-          teacherId: 1, 
-          sequenceId: 1, 
-          createdAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 5)
-        },
-        { 
-          id: 4, 
-          name: "Cours sur les nombres relatifs", 
-          type: "document", 
-          url: null, 
-          content: "Contenu du cours sur les nombres relatifs...", 
-          teacherId: 1, 
-          sequenceId: 2, 
-          createdAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 4)
-        },
-        { 
-          id: 5, 
-          name: "Exercices - Opérations sur les relatifs", 
-          type: "exercise", 
-          url: null, 
-          content: "Série d'exercices sur les opérations avec des nombres relatifs...", 
-          teacherId: 1, 
-          sequenceId: 2, 
-          createdAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 2)
-        }
-      ].filter(res => {
-        // Filter by resource type if selected
-        if (activeTab !== 'all') {
-          if (activeTab === 'documents' && res.type !== 'document') return false;
-          if (activeTab === 'links' && res.type !== 'link') return false;
-          if (activeTab === 'exercises' && res.type !== 'exercise') return false;
-        }
+  // Charger les ressources depuis le localStorage
+  useEffect(() => {
+    const fetchResources = () => {
+      setIsLoadingResources(true);
+      try {
+        // Récupérer les ressources du localStorage
+        const storedResources = localStorage.getItem('resources');
         
-        // Filter by sequence if selected
-        if (selectedSequence !== 'all' && res.sequenceId !== parseInt(selectedSequence)) return false;
-        
-        return true;
-      });
-    }
-  });
+        if (storedResources) {
+          const parsedResources = JSON.parse(storedResources) as Resource[];
+          // Filtrer les ressources qui appartiennent à cet utilisateur
+          let filteredResources = parsedResources.filter(res => 
+            String(res.teacherId) === teacherInfo.fullName
+          );
+          
+          // Filtrer par type de ressource si sélectionné
+          if (activeTab !== 'all') {
+            if (activeTab === 'documents') {
+              filteredResources = filteredResources.filter(res => res.type === 'document');
+            } else if (activeTab === 'links') {
+              filteredResources = filteredResources.filter(res => res.type === 'link');
+            } else if (activeTab === 'exercises') {
+              filteredResources = filteredResources.filter(res => res.type === 'exercise');
+            }
+          }
+          
+          // Filtrer par séquence si nécessaire
+          if (selectedSequence !== 'all') {
+            filteredResources = filteredResources.filter(res => 
+              res.sequenceId === parseInt(selectedSequence)
+            );
+          }
+          
+          setResources(filteredResources);
+        } else {
+          // Aucune ressource trouvée, initialiser un tableau vide
+          setResources([]);
+          
+          // Si nous avons des séquences, créons quelques ressources d'exemple
+          if (sequences.length > 0 && !localStorage.getItem('resources_created')) {
+            const now = new Date();
+            
+            const defaultResources: Resource[] = [
+              { 
+                id: Date.now(),
+                name: `Introduction à ${teacherInfo.subject}`, 
+                type: "document", 
+                url: null, 
+                content: `Contenu du cours d'introduction à ${teacherInfo.subject}...`, 
+                teacherId: teacherInfo.fullName as unknown as number, 
+                sequenceId: sequences[0].id, 
+                createdAt: new Date(now.getFullYear(), now.getMonth(), now.getDate())
+              },
+              { 
+                id: Date.now() + 1,
+                name: `Exercices de base - ${teacherInfo.subject}`, 
+                type: "exercise", 
+                url: null, 
+                content: `Série d'exercices de base sur ${teacherInfo.subject}...`, 
+                teacherId: teacherInfo.fullName as unknown as number, 
+                sequenceId: sequences[0].id, 
+                createdAt: new Date(now.getFullYear(), now.getMonth(), now.getDate())
+              }
+            ];
+            
+            localStorage.setItem('resources', JSON.stringify(defaultResources));
+            localStorage.setItem('resources_created', 'true');
+            setResources(defaultResources);
+            
+            toast({
+              title: "Ressources créées",
+              description: "Des ressources d'exemple ont été créées pour vous.",
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des ressources:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les ressources.",
+          variant: "destructive",
+        });
+        setResources([]);
+      } finally {
+        setIsLoadingResources(false);
+      }
+    };
+    
+    fetchResources();
+  }, [sequences, selectedSequence, activeTab, teacherInfo.fullName, teacherInfo.subject, toast]);
   
   // Filter resources by search query
-  const filteredResources = resources?.filter(resource => 
+  const filteredResources = resources.filter(resource => 
     resource.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     (resource.content && resource.content.toLowerCase().includes(searchQuery.toLowerCase()))
   );

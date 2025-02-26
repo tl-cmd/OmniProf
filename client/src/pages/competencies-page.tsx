@@ -1,15 +1,16 @@
 import { AppLayout } from "@/components/layout/app-layout";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { CompetencyFramework, Competency } from "@shared/schema";
-import { Plus, Search, FileText, BarChart, Check } from "lucide-react";
+import { Plus, Search, FileText, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
+import { Teacher } from "../App";
 import {
   Accordion,
   AccordionContent,
@@ -17,73 +18,142 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-export default function CompetenciesPage() {
+interface CompetenciesPageProps {
+  teacherInfo: Teacher;
+}
+
+export default function CompetenciesPage({ teacherInfo }: CompetenciesPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("frameworks");
   const [selectedFramework, setSelectedFramework] = useState<string>("all");
+  const [frameworks, setFrameworks] = useState<CompetencyFramework[]>([]);
+  const [competencies, setCompetencies] = useState<Competency[]>([]);
+  const [isLoadingFrameworks, setIsLoadingFrameworks] = useState(true);
+  const [isLoadingCompetencies, setIsLoadingCompetencies] = useState(true);
+  const { toast } = useToast();
   
-  // Fetch frameworks
-  const { data: frameworks, isLoading: isLoadingFrameworks } = useQuery<CompetencyFramework[]>({
-    queryKey: ['/api/competency-frameworks'],
-    queryFn: async () => {
-      // In a real app, we would fetch from the API
-      // For now, we'll return mock data
-      return [
-        { 
-          id: 1, 
-          name: "Mathématiques - Collège", 
-          description: "Référentiel de compétences mathématiques pour le collège", 
-          teacherId: 1, 
-          createdAt: new Date() 
-        },
-        { 
-          id: 2, 
-          name: "Mathématiques - Lycée", 
-          description: "Référentiel de compétences mathématiques pour le lycée", 
-          teacherId: 1, 
-          createdAt: new Date() 
+  // Charger les référentiels depuis le localStorage
+  useEffect(() => {
+    const fetchFrameworks = () => {
+      setIsLoadingFrameworks(true);
+      try {
+        // Récupérer les référentiels du localStorage
+        const storedFrameworks = localStorage.getItem('competencyFrameworks');
+        if (storedFrameworks) {
+          const parsedFrameworks = JSON.parse(storedFrameworks) as CompetencyFramework[];
+          // Filtrer les référentiels qui appartiennent à cet utilisateur
+          const teacherFrameworks = parsedFrameworks.filter(framework => 
+            String(framework.teacherId) === teacherInfo.fullName
+          );
+          setFrameworks(teacherFrameworks);
+        } else {
+          // Aucun référentiel trouvé, initialiser un tableau vide
+          setFrameworks([]);
+          
+          // Pour la première utilisation, créer un référentiel par défaut
+          if (teacherInfo.subject) {
+            const defaultFramework: CompetencyFramework = {
+              id: Date.now(),
+              name: `${teacherInfo.subject} - Compétences de base`,
+              description: `Référentiel de compétences pour ${teacherInfo.subject}`,
+              teacherId: teacherInfo.fullName as unknown as number,
+              createdAt: new Date(),
+            };
+            
+            localStorage.setItem('competencyFrameworks', JSON.stringify([defaultFramework]));
+            setFrameworks([defaultFramework]);
+            
+            toast({
+              title: "Référentiel créé",
+              description: "Un référentiel de compétences par défaut a été créé pour vous.",
+            });
+          }
         }
-      ];
-    }
-  });
+      } catch (error) {
+        console.error("Erreur lors du chargement des référentiels:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les référentiels.",
+          variant: "destructive",
+        });
+        setFrameworks([]);
+      } finally {
+        setIsLoadingFrameworks(false);
+      }
+    };
+    
+    fetchFrameworks();
+  }, [teacherInfo.fullName, teacherInfo.subject, toast]);
   
-  // Fetch competencies
-  const { data: competencies, isLoading: isLoadingCompetencies } = useQuery<Competency[]>({
-    queryKey: ['/api/competencies', { frameworkId: selectedFramework !== "all" ? parseInt(selectedFramework) : undefined }],
-    queryFn: async () => {
-      // In a real app, we would fetch from the API based on the selected framework
-      // For now, we'll return mock data
-      return [
-        { id: 1, name: "Résoudre des problèmes", description: "Résoudre des problèmes impliquant des grandeurs variées", frameworkId: 1, createdAt: new Date() },
-        { id: 2, name: "Utiliser les nombres relatifs", description: "Additionner, soustraire, multiplier et diviser des nombres relatifs", frameworkId: 1, createdAt: new Date() },
-        { id: 3, name: "Calculer avec des fractions", description: "Effectuer des calculs avec des nombres en écriture fractionnaire", frameworkId: 1, createdAt: new Date() },
-        { id: 4, name: "Utiliser le théorème de Pythagore", description: "Calculer des longueurs en utilisant le théorème de Pythagore", frameworkId: 1, createdAt: new Date() },
-        { id: 5, name: "Calculer une expression littérale", description: "Substituer une valeur numérique à une lettre pour calculer une expression littérale", frameworkId: 1, createdAt: new Date() },
-        { id: 6, name: "Résoudre des équations", description: "Résoudre algébriquement des équations du premier degré à une inconnue", frameworkId: 1, createdAt: new Date() }
-      ];
-    }
-  });
+  // Charger les compétences depuis le localStorage
+  useEffect(() => {
+    const fetchCompetencies = () => {
+      setIsLoadingCompetencies(true);
+      try {
+        // Récupérer les compétences du localStorage
+        const storedCompetencies = localStorage.getItem('competencies');
+        if (storedCompetencies) {
+          const parsedCompetencies = JSON.parse(storedCompetencies) as Competency[];
+          let filteredCompetencies = parsedCompetencies;
+          
+          // Filtrer par référentiel si nécessaire
+          if (selectedFramework !== "all") {
+            filteredCompetencies = parsedCompetencies.filter(
+              comp => comp.frameworkId === parseInt(selectedFramework)
+            );
+          }
+          
+          setCompetencies(filteredCompetencies);
+        } else {
+          // Aucune compétence trouvée, initialiser un tableau vide
+          setCompetencies([]);
+          
+          // Si nous avons un référentiel par défaut, ajoutons quelques compétences d'exemple
+          if (frameworks.length > 0 && teacherInfo.subject === "Mathématiques") {
+            const defaultCompetencies: Competency[] = [
+              { id: Date.now(), name: "Résoudre des problèmes", description: "Résoudre des problèmes impliquant des grandeurs variées", frameworkId: frameworks[0].id, createdAt: new Date() },
+              { id: Date.now() + 1, name: "Utiliser les nombres relatifs", description: "Additionner, soustraire, multiplier et diviser des nombres relatifs", frameworkId: frameworks[0].id, createdAt: new Date() },
+              { id: Date.now() + 2, name: "Calculer avec des fractions", description: "Effectuer des calculs avec des nombres en écriture fractionnaire", frameworkId: frameworks[0].id, createdAt: new Date() },
+            ];
+            
+            localStorage.setItem('competencies', JSON.stringify(defaultCompetencies));
+            setCompetencies(defaultCompetencies);
+            
+            toast({
+              title: "Compétences créées",
+              description: "Des compétences d'exemple ont été créées pour vous.",
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des compétences:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les compétences.",
+          variant: "destructive",
+        });
+        setCompetencies([]);
+      } finally {
+        setIsLoadingCompetencies(false);
+      }
+    };
+    
+    fetchCompetencies();
+  }, [frameworks, selectedFramework, teacherInfo.subject, toast]);
   
   // Filter items by search query
-  const filteredFrameworks = frameworks?.filter(framework => 
+  const filteredFrameworks = frameworks.filter(framework => 
     framework.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     (framework.description && framework.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
   
-  const filteredCompetencies = competencies?.filter(competency => 
+  const filteredCompetencies = competencies.filter(competency => 
     competency.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     (competency.description && competency.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
   
-  // Progress data (mock)
-  const competencyProgress = {
-    1: 78,
-    2: 62,
-    3: 45,
-    4: 85,
-    5: 68,
-    6: 72
-  };
+  // Progress data (mock, mais dans un vrai cas il viendrait du localStorage aussi)
+  const competencyProgress: Record<number, number> = {};
 
   const getProgressColorClass = (progress: number) => {
     if (progress >= 75) return "bg-green-500";
