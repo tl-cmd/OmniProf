@@ -145,7 +145,9 @@ export default function NewSequencePage({ teacherInfo }: NewSequencePageProps) {
       });
       
       // Rediriger vers la liste des séquences
-      navigate("/sequences");
+      setTimeout(() => {
+        navigate("/sequences");
+      }, 500);
     } catch (error) {
       console.error("Erreur lors de la création de la séquence:", error);
       toast({

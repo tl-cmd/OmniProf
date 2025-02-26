@@ -80,7 +80,9 @@ export default function NewFrameworkPage({ teacherInfo }: NewFrameworkPageProps)
       });
       
       // Rediriger vers la page des compétences
-      navigate("/competencies");
+      setTimeout(() => {
+        navigate("/competencies" as any);
+      }, 500);
     } catch (error) {
       console.error("Erreur lors de la création du référentiel:", error);
       toast({
@@ -137,7 +139,7 @@ export default function NewFrameworkPage({ teacherInfo }: NewFrameworkPageProps)
                 <Button 
                   type="button" 
                   variant="outline" 
-                  onClick={() => navigate("/competencies")}
+                  onClick={() => navigate("/competencies" as any)}
                 >
                   Annuler
                 </Button>

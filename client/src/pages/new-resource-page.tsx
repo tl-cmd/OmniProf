@@ -137,7 +137,9 @@ export default function NewResourcePage({ teacherInfo }: NewResourcePageProps) {
       });
       
       // Rediriger vers la page des ressources
-      navigate("/resources");
+      setTimeout(() => {
+        navigate("/resources");
+      }, 500);
     } catch (error) {
       console.error("Erreur lors de la création de la ressource:", error);
       toast({

@@ -115,7 +115,9 @@ export default function NewCompetencyPage({ teacherInfo }: NewCompetencyPageProp
       });
       
       // Rediriger vers la page des compétences
-      navigate("/competencies");
+      setTimeout(() => {
+        navigate("/competencies" as any);
+      }, 500);
     } catch (error) {
       console.error("Erreur lors de la création de la compétence:", error);
       toast({
