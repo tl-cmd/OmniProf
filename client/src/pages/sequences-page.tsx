@@ -79,9 +79,12 @@ export default function SequencesPage({ teacherInfo }: SequencesPageProps) {
           );
           
           // Filtrer par statut
-          if (activeTab !== 'all') {
-            filteredSequences = filteredSequences.filter(seq => seq.status === activeTab);
-          }
+          filteredSequences = filteredSequences.filter(seq => {
+            if (activeTab === 'active' && seq.status === 'active') return true;
+            if (activeTab === 'draft' && seq.status === 'draft') return true;
+            if (activeTab === 'completed' && seq.status === 'completed') return true;
+            return false;
+          });
           
           // Filtrer par classe si nécessaire
           if (selectedClass !== 'all') {

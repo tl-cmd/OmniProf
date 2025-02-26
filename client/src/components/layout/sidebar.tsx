@@ -105,27 +105,30 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
       <div className="h-0 flex-1 flex flex-col overflow-y-auto">
         <nav className="flex-1 px-2 py-4 space-y-1">
           {links.map((link) => (
-            <Link key={link.href} href={link.href}>
-              <a
-                className={cn(
-                  "group flex items-center px-2 py-2 text-sm font-medium rounded-md", 
-                  location === link.href 
-                    ? "bg-primary-50 text-primary-600" 
-                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                )}
-                onClick={closeSheetIfMobile}
-              >
-                <div className={cn(
-                  "mr-3", 
-                  location === link.href 
-                    ? "text-primary-500" 
-                    : "text-gray-400 group-hover:text-gray-500"
-                )}>
-                  {link.icon}
-                </div>
-                {link.label}
-              </a>
-            </Link>
+            <div key={link.href}>
+              <Link href={link.href}>
+                <Button
+                  variant="ghost" 
+                  className={cn(
+                    "w-full justify-start px-2 py-2 text-sm font-medium rounded-md", 
+                    location === link.href 
+                      ? "bg-primary-50 text-primary-600" 
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  )}
+                  onClick={closeSheetIfMobile}
+                >
+                  <div className={cn(
+                    "mr-3", 
+                    location === link.href 
+                      ? "text-primary-500" 
+                      : "text-gray-400 group-hover:text-gray-500"
+                  )}>
+                    {link.icon}
+                  </div>
+                  {link.label}
+                </Button>
+              </Link>
+            </div>
           ))}
         </nav>
 

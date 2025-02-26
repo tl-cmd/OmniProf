@@ -5,8 +5,12 @@ import DashboardPage from "@/pages/dashboard-page";
 import ClassesPage from "@/pages/classes-page";
 import NewClassPage from "@/pages/new-class-page";
 import CompetenciesPage from "@/pages/competencies-page";
+import NewFrameworkPage from "@/pages/new-framework-page";
+import NewCompetencyPage from "@/pages/new-competency-page";
 import SequencesPage from "@/pages/sequences-page";
+import NewSequencePage from "@/pages/new-sequence-page";
 import ResourcesPage from "@/pages/resources-page";
+import NewResourcePage from "@/pages/new-resource-page";
 import SchedulePage from "@/pages/schedule-page";
 import PronotePage from "@/pages/pronote-page";
 import { useState, useEffect } from "react";
@@ -168,6 +172,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={HomePage} />
+      
+      {/* Routes pour les classes */}
       <Route 
         path="/classes" 
         component={() => 
@@ -180,6 +186,8 @@ function Router() {
           <ProtectedRoute path="/classes/new" component={NewClassPage} teacher={teacher} />
         } 
       />
+      
+      {/* Routes pour les compétences */}
       <Route 
         path="/competencies" 
         component={() => 
@@ -187,17 +195,47 @@ function Router() {
         } 
       />
       <Route 
+        path="/competencies/new-framework" 
+        component={() => 
+          <ProtectedRoute path="/competencies/new-framework" component={NewFrameworkPage} teacher={teacher} />
+        } 
+      />
+      <Route 
+        path="/competencies/new" 
+        component={() => 
+          <ProtectedRoute path="/competencies/new" component={NewCompetencyPage} teacher={teacher} />
+        } 
+      />
+      
+      {/* Routes pour les séquences */}
+      <Route 
         path="/sequences" 
         component={() => 
           <ProtectedRoute path="/sequences" component={SequencesPage} teacher={teacher} />
         } 
       />
       <Route 
+        path="/sequences/new" 
+        component={() => 
+          <ProtectedRoute path="/sequences/new" component={NewSequencePage} teacher={teacher} />
+        } 
+      />
+      
+      {/* Routes pour les ressources */}
+      <Route 
         path="/resources" 
         component={() => 
           <ProtectedRoute path="/resources" component={ResourcesPage} teacher={teacher} />
         } 
       />
+      <Route 
+        path="/resources/new" 
+        component={() => 
+          <ProtectedRoute path="/resources/new" component={NewResourcePage} teacher={teacher} />
+        } 
+      />
+      
+      {/* Autres routes */}
       <Route 
         path="/schedule" 
         component={() => 
@@ -210,6 +248,8 @@ function Router() {
           <ProtectedRoute path="/pronote" component={PronotePage} teacher={teacher} />
         } 
       />
+      
+      {/* Route par défaut */}
       <Route component={NotFound} />
     </Switch>
   );
