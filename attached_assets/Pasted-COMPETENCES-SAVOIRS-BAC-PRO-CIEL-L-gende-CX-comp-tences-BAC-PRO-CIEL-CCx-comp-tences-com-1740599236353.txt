@@ -1,0 +1,203 @@
+COMPETENCES & SAVOIRS BAC PRO CIEL
+Légende : 
+CX = compétences BAC PRO CIEL
+CCx = compétences communes secondes MTNE
+Les correspondances sont déjà faites.
+C01 - COMMUNIQUER EN SITUATION PROFESSIONNELLE (FRANÇAIS/ANGLAIS)
+CC8/CC9 - Renseigner les documents/Communiquer avec le client
+
+Savoirs (Connaissances associées) & Niveaux taxonomiques :
+Communication interpersonnelle Niveau 2
+Théorie de la communication : définition, composantes, enjeux, registre de langage, discours expert Niveau 2
+Communication écrite : cahiers des charges, dossiers de présentation Niveau 3
+Communication orale : verbale et non verbale, écoute active, empathie, techniques de reformulation Niveau 3
+Règles de présentation et de typographie Niveau 3
+
+Critères d’évaluation :
+La présentation (typographie, orthographe, illustration, lisibilité) est soignée et soutient le discours avec des enchaînements cohérents
+La présentation orale (support et expression) est de qualité et claire
+L'argumentation développée lors de la présentation et de l'échange est de qualité
+L’argumentation tient compte des éventuelles situations de handicap des personnes avec lesquelles il interagit
+
+
+
+Savoirs être :
+Le style, le ton et la terminologie utilisés sont adaptés à la personne et aux circonstances
+L’attitude, les comportements et le langage adoptés sont conformes aux règles de la profession, la réaction est adaptée au contexte
+
+C03 - PARTICIPER A UN PROJET
+CC2/CC1 - Organiser la réalisation ou l’intervention/S’informer sur l’intervention ou sur la réalisation
+
+Savoirs (Connaissances associées) & Niveaux taxonomiques :
+− Outils de suivi Niveau 2
+− Budgétisation des ressources humaines et matérielles Niveau 2
+
+Critères d’évaluation :
+− Le suivi du projet est conforme aux attentes
+− L’espace collaboratif est utilisé de manière appropriée
+
+Savoirs être :
+− Les tâches sont exécutées avec une attention soutenue et minutieuse afin de garantir le résultat escompté  
+
+C04 - ANALYSER UNE STRUCTURE MATÉRIELLE ET LOGICIELLE
+CC3 - Analyser et exploiter les données
+
+Savoirs (Connaissances associées) & Niveaux taxonomiques :
+− Infrastructures matérielles et logicielles centralisées, décentralisées ou réparties Niveau 3
+− Documents d'architecture métiers (synoptique, schéma de câblage, etc.) Niveau 3
+− Structures électroniques matérielles (analogiques et numériques) Niveau 2
+− Expertise en électronique analogique Niveau 3
+− Anglais technique Niveau 2
+
+Critères d’évaluation :
+− Identification du besoin ainsi que des ressources matérielles, logicielles et humaines
+− Extraction des informations nécessaires des documents réglementaires et/ou constructeurs
+− Interprétation des indicateurs de fonctionnement
+Savoirs être :
+− Organisation du travail pour répondre aux exigences de qualité, d'efficacité et de délai
+− Maintien constant du calme dans des situations particulières, persévérance jusqu'à l'obtention du résultat sans découragement
+− Identification des risques en situation de travail et adoption des mesures appropriées pour la santé, la sécurité personnelle et celle des autres 
+
+C06 - VALIDER LA CONFORMITÉ D’UNE INSTALLATION
+CC6 - Mettre en service
+
+Connaissances associées & Niveaux taxonomiques
+− Réseaux informatiques (protocoles, équipements et outils usuels) Niveau 3
+− Principes des modèles en couches Niveau 1
+− Architecture réseaux industriels et tertiaires Niveau 2
+− Structures matérielles (analogiques et numériques) Niveau 2
+− Structures programmables Niveau 2
+− Appareils de mesure Niveau 3
+
+Critères d’évaluation
+Les exigences du cahier des charges sont respectées
+Les tests sont effectués
+Les résultats attendus sont vérifiés
+La procédure de test est suivie
+
+
+
+
+Savoirs être
+− Le travail est effectué de manière honnête, sans tromper, abuser, léser ou blesser autrui
+− Des actions appropriées sont décidées face à un ensemble de faits.
+
+C07 - RÉALISER DES MAQUETTES ET PROTOTYPES
+CC4 - Réaliser une installation ou une intervention
+
+Connaissances associées & Niveaux taxonomiques
+Technologies de boîtiers de composants (CMS, traversant, connectiques) Niveau 3
+Technologies de fabrication d’un PCB (procédés industriels) Niveau 2
+Procédés industriels de pose et brasure Niveau 2
+Procédés de prototypage Niveau 3
+Normes IPC Niveau 2
+Normes QSE Niveau 2
+Notions et concepts du développement durable appliqués aux produits électroniques et services numériques Niveau 2
+
+Critères d’évaluation
+Le placement et routage respectent le cahier des charges
+La génération des fichiers de fabrication du PCB est conforme aux attentes
+Le PCB est réalisé, contrôlé et respecte les normes IPC (tolérances mécaniques, finition de surface, propreté, ESD, etc.)
+Les composants sont conformes à la nomenclature (marquage, étiquetage)
+La nomenclature des composants est respectée
+Le brasage de la carte est conforme à la nomenclature et aux normes IPC
+Les contraintes environnementales sont intégrées
+Le contrôle visuel de la carte assemblée correspond au dossier de fabrication
+Les risques liés à la situation de travail sont identifiés et les mesures appropriées pour la santé et la sécurité sont prises
+Savoirs être
+Le travail est effectué selon les attentes en termes de temps, quantité ou qualité tout en respectant les contraintes environnementales
+L’effort nécessaire est fourni pour terminer et réussir le travail demandé
+Le travail est préparé pour satisfaire les exigences de qualité, d’efficacité et de respect des délais 
+
+C08 - CODER
+CC4 - Réaliser une installation ou une intervention
+
+Connaissances associées & Niveaux taxonomiques :
+− Langages de développement, description, interfaces IDE Niveau 2
+− Outils de modélisation Niveau 2
+− Politiques liées à la sécurisation des applications Niveau 2
+− Infrastructures matérielles et logicielles Niveau 2
+− Principes fondamentaux de programmation Niveau 3
+
+Critères d’évaluation :
+− Les environnements de développement et de test respectent les contraintes de fonctionnalités et de sécurité
+− Le module logiciel est débogué et sans erreur syntaxique
+− Les composants logiciels sont développés et testés selon les spécifications
+− La solution intégrée est testée conformément aux spécifications
+− Le code est commenté et le logiciel documenté
+
+Savoirs être :
+− Le travail est effectué selon les attentes de temps, quantité ou qualité
+− Le travail en équipe est solidaire, avec contribution d'idées et d'efforts 
+
+C09 - INSTALLER LES ÉLÉMENTS D’UN SYSTÈME ÉLECTRONIQUE OU INFORMATIQUE
+CC4 - Réaliser une installation ou une intervention
+
+Connaissances associées & Niveaux taxonomiques
+− Conception mécanique et architecturale en 2D et 3D Niveau 3
+− Schémas électriques, électroniques et de réseaux Niveau 3
+− Utilisation d’appareils de mesure (multimètre, oscilloscope, etc.) Niveau 3
+− Habilitation électrique niveau B1V Niveau 3
+− Utilisation d’outillage mécanique et spécifique Niveau 3
+− Certification AIPR (Autorisation d’Intervenir à Proximité des Réseaux) Niveau 3
+− Connaissances en éléments actifs Niveau 3
+
+Critères d’évaluation
+− Vérification complète des éléments nécessaires à l’installation du système conformément au cahier des charges
+− Installation et raccordement des éléments du système suivant une procédure définie
+− Réalisation de la configuration
+− Mise en service effectuée
+− État de l’installation documenté de manière écrite ou orale
+− Identifications des risques et adoption des mesures appropriées pour assurer la santé et la sécurité de tous
+Savoirs être
+− Préparation du travail afin de répondre aux exigences de qualité, d’efficacité et de conformité au calendrier
+− Exécution du travail selon les attentes en termes de temps, quantité ou qualité
+− Résolution réussie de problèmes nouveaux et imprévus en utilisant ses propres ressources conformément aux règles de la fonction
+− Accomplissement de tâches variées dans différents domaines et contextes 
+
+C10 - EXPLOITER UN RÉSEAU INFORMATIQUE
+CC5 - Effectuer les opérations préalables
+
+Connaissances associées & niveaux taxonomiques :
+− Commandes d’équipements Niveau 3
+− Connexion à distance Niveau 3
+− Systèmes UNIX et Windows Niveau 2
+− Sécurité informatique Niveau 2
+
+Critères d’évaluation :
+− Alertes et problèmes signalés
+− Éléments de réseau ou système identifiés sur un schéma
+− Mise à jour des équipements effectuée (iOS, OS, logiciels, firmware)
+− Optimisations nécessaires réalisées
+
+Savoirs être :
+− Travail en équipe solidaire avec contribution d'idées et d'efforts
+− Travail préparé pour satisfaire qualité, efficacité et échéancier 
+
+
+
+C11 - MAINTENIR UN SYSTÈME ÉLECTRONIQUE OU RÉSEAU INFORMATIQUE
+CC7 - Réaliser une opération de maintenance
+
+Connaissances associées & niveaux taxonomiques :
+Structures électroniques analogiques et numériques : Niveau 3
+Structures programmables : Niveau 2
+Caractérisation de signaux non complexes : Niveau 2
+Appareils de mesure (multimètre, oscilloscope, générateurs, etc.) : Niveau 3
+Formation à l'habilitation électrique BR : Niveau 2
+Économie de la maintenance (coûts de la maintenance) : Niveau 2
+Normes QSE : Niveau 1
+Différents types de maintenance : Niveau 2
+Normes IPC spécifiques à la réparation : Niveau 2
+
+Critères d’évaluation :
+L'intervention est préparée
+Le dysfonctionnement est constaté
+La maintenance ou la réparation est réalisée
+La fiche d’intervention est correctement renseignée
+Les risques d’une situation de travail sont identifiés et des mesures appropriées pour la santé et la sécurité de chacun sont adoptées
+
+Savoir-être :
+Un suivi attentif et constant du déroulement des tâches de travail est observé pour garantir le résultat attendu
+Des idées novatrices, des pratiques et des ressources inhabituelles sont introduites pour favoriser l’avancement de son propre travail ou de celui des autres 
+

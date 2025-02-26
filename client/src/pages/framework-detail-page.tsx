@@ -1,10 +1,10 @@
 import { AppLayout } from "@/components/layout/app-layout";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { CompetencyFramework, Competency } from "@shared/schema";
+import { CompetencyFramework, Competency, Knowledge, EvaluationCriteria, InsertKnowledge, InsertEvaluationCriteria } from "@shared/schema";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { Plus, Edit, Trash } from "lucide-react";
+import { Plus, Edit, Trash, BookOpen, List, CheckCircle2, PlusCircle, Info, AlignLeft, Sparkles } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -41,9 +41,26 @@ import { Teacher } from "../App";
 const competencySchema = z.object({
   name: z.string().min(3, "Le nom doit comporter au moins 3 caractères"),
   description: z.string().min(10, "La description doit comporter au moins 10 caractères"),
+  code: z.string().optional(),
+});
+
+// Schéma de validation pour le savoir associé
+const knowledgeSchema = z.object({
+  name: z.string().min(3, "Le nom doit comporter au moins 3 caractères"),
+  taxonomicLevel: z.number().min(1).max(3),
+  competencyId: z.number(),
+});
+
+// Schéma de validation pour le critère d'évaluation
+const criteriaSchema = z.object({
+  description: z.string().min(10, "La description doit comporter au moins 10 caractères"),
+  type: z.enum(["technical", "behavior"]),
+  competencyId: z.number(),
 });
 
 type CompetencyFormValues = z.infer<typeof competencySchema>;
+type KnowledgeFormValues = z.infer<typeof knowledgeSchema>;
+type CriteriaFormValues = z.infer<typeof criteriaSchema>;
 
 interface FrameworkDetailPageProps {
   teacherInfo: Teacher;
@@ -54,8 +71,14 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
   const [isLoading, setIsLoading] = useState(true);
   const [framework, setFramework] = useState<CompetencyFramework | null>(null);
   const [competencies, setCompetencies] = useState<Competency[]>([]);
+  const [knowledgeItems, setKnowledgeItems] = useState<Knowledge[]>([]);
+  const [evaluationCriteria, setEvaluationCriteria] = useState<EvaluationCriteria[]>([]);
   const [isEditingFramework, setIsEditingFramework] = useState(false);
   const [isAddingCompetency, setIsAddingCompetency] = useState(false);
+  const [selectedCompetency, setSelectedCompetency] = useState<Competency | null>(null);
+  const [isAddingKnowledge, setIsAddingKnowledge] = useState(false);
+  const [isAddingCriteria, setIsAddingCriteria] = useState(false);
+  const [activeCompetencyTab, setActiveCompetencyTab] = useState<string>("details");
   const { toast } = useToast();
   const [_, setLocation] = useLocation();
 
@@ -99,6 +122,22 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
         );
         
         setCompetencies(frameworkCompetencies);
+
+        // Récupérer les savoirs associés
+        const storedKnowledge = localStorage.getItem('knowledge');
+        const allKnowledge: Knowledge[] = storedKnowledge
+          ? JSON.parse(storedKnowledge)
+          : [];
+        
+        setKnowledgeItems(allKnowledge);
+        
+        // Récupérer les critères d'évaluation
+        const storedCriteria = localStorage.getItem('evaluationCriteria');
+        const allCriteria: EvaluationCriteria[] = storedCriteria
+          ? JSON.parse(storedCriteria)
+          : [];
+        
+        setEvaluationCriteria(allCriteria);
       } catch (error) {
         console.error("Erreur lors de la récupération des données:", error);
         toast({
@@ -113,6 +152,26 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
     
     fetchData();
   }, [frameworkId, setLocation, toast]);
+  
+  // Récupérer les savoirs associés à une compétence
+  const getCompetencyKnowledge = (competencyId: number) => {
+    return knowledgeItems.filter(item => item.competencyId === competencyId);
+  };
+  
+  // Récupérer les critères d'évaluation d'une compétence
+  const getCompetencyCriteria = (competencyId: number) => {
+    return evaluationCriteria.filter(item => item.competencyId === competencyId);
+  };
+  
+  // Récupérer les critères d'évaluation techniques d'une compétence
+  const getTechnicalCriteria = (competencyId: number) => {
+    return evaluationCriteria.filter(item => item.competencyId === competencyId && item.type === 'technical');
+  };
+  
+  // Récupérer les critères d'évaluation comportementaux d'une compétence
+  const getBehaviorCriteria = (competencyId: number) => {
+    return evaluationCriteria.filter(item => item.competencyId === competencyId && item.type === 'behavior');
+  };
 
   // Formulaire d'édition du référentiel
   const editFrameworkForm = useForm<{
