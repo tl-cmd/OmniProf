@@ -1,5 +1,4 @@
 import { Link, useLocation } from "wouter";
-import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import {
   LayoutDashboard,
@@ -9,12 +8,14 @@ import {
   Book,
   Calendar,
   ClipboardList,
-  LogOut,
+  Settings,
   Menu
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Teacher } from "../../App";
+import { useToast } from "@/hooks/use-toast";
 
 interface SidebarProps {
   className?: string;
@@ -22,12 +23,34 @@ interface SidebarProps {
 }
 
 export function Sidebar({ className, isMobile = false }: SidebarProps) {
-  const { user, logoutMutation } = useAuth();
   const [location] = useLocation();
   const [open, setOpen] = useState(false);
+  const [teacher, setTeacher] = useState<Teacher | null>(null);
+  const { toast } = useToast();
   
-  const handleLogout = () => {
-    logoutMutation.mutate();
+  // Récupérer les infos enseignant du localStorage
+  useEffect(() => {
+    const savedTeacher = localStorage.getItem('teacher');
+    if (savedTeacher) {
+      try {
+        setTeacher(JSON.parse(savedTeacher));
+      } catch (e) {
+        console.error("Impossible de charger les données de l'enseignant", e);
+      }
+    }
+  }, []);
+  
+  const handleClearData = () => {
+    if (confirm("Êtes-vous sûr de vouloir réinitialiser l'application ? Toutes vos données seront perdues.")) {
+      localStorage.clear();
+      toast({
+        title: "Application réinitialisée",
+        description: "Toutes les données ont été effacées. L'application va redémarrer.",
+      });
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
+    }
   };
 
   const closeSheetIfMobile = () => {
@@ -92,43 +115,49 @@ export function Sidebar({ className, isMobile = false }: SidebarProps) {
                 )}
                 onClick={closeSheetIfMobile}
               >
-                {React.cloneElement(link.icon, { 
-                  className: cn(
-                    "mr-3 h-5 w-5", 
-                    location === link.href 
-                      ? "text-primary-500" 
-                      : "text-gray-400 group-hover:text-gray-500"
-                  ) 
-                })}
+                <div className={cn(
+                  "mr-3", 
+                  location === link.href 
+                    ? "text-primary-500" 
+                    : "text-gray-400 group-hover:text-gray-500"
+                )}>
+                  {link.icon}
+                </div>
                 {link.label}
               </a>
             </Link>
           ))}
         </nav>
 
-        {user && (
-          <div className="flex items-center p-4 border-t border-gray-200">
-            <div className="flex-shrink-0">
-              <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center">
-                <span className="text-primary-600 font-semibold">
-                  {user.fullName.split(' ').map(name => name[0]).join('').toUpperCase()}
-                </span>
+        {teacher && (
+          <div className="flex flex-col p-4 border-t border-gray-200">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center">
+                  <span className="text-primary-600 font-semibold">
+                    {teacher.fullName.split(' ').map(name => name[0]).join('').toUpperCase()}
+                  </span>
+                </div>
+              </div>
+              <div className="ml-3 flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-700 truncate">{teacher.fullName}</p>
+                <p className="text-xs font-medium text-gray-500 truncate">
+                  {teacher.subject ? `Professeur de ${teacher.subject}` : 'Enseignant'}
+                </p>
               </div>
             </div>
-            <div className="ml-3 flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-700 truncate">{user.fullName}</p>
-              <p className="text-xs font-medium text-gray-500 truncate">
-                {user.subject ? `Professeur de ${user.subject}` : 'Enseignant'}
-              </p>
+            
+            <div className="mt-4">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full text-xs flex items-center justify-center"
+                onClick={handleClearData}
+              >
+                <Settings className="h-3.5 w-3.5 mr-1" />
+                Réinitialiser l'application
+              </Button>
             </div>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={handleLogout} 
-              disabled={logoutMutation.isPending}
-            >
-              <LogOut className="h-5 w-5 text-gray-400" />
-            </Button>
           </div>
         )}
       </div>
