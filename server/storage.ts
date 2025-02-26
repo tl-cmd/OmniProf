@@ -288,6 +288,70 @@ export class MemStorage implements IStorage {
     return this.competencies.delete(id);
   }
 
+  // Knowledge methods
+  async getKnowledge(competencyId: number): Promise<Knowledge[]> {
+    return Array.from(this.knowledge.values()).filter(
+      (item) => item.competencyId === competencyId
+    );
+  }
+
+  async getKnowledgeItem(id: number): Promise<Knowledge | undefined> {
+    return this.knowledge.get(id);
+  }
+
+  async createKnowledge(knowledge: InsertKnowledge): Promise<Knowledge> {
+    const id = this.knowledgeIdCounter++;
+    const now = new Date();
+    const newKnowledge: Knowledge = { ...knowledge, id, createdAt: now };
+    this.knowledge.set(id, newKnowledge);
+    return newKnowledge;
+  }
+
+  async updateKnowledge(id: number, knowledgeData: Partial<InsertKnowledge>): Promise<Knowledge | undefined> {
+    const existingKnowledge = this.knowledge.get(id);
+    if (!existingKnowledge) return undefined;
+    
+    const updatedKnowledge = { ...existingKnowledge, ...knowledgeData };
+    this.knowledge.set(id, updatedKnowledge);
+    return updatedKnowledge;
+  }
+
+  async deleteKnowledge(id: number): Promise<boolean> {
+    return this.knowledge.delete(id);
+  }
+
+  // Evaluation Criteria methods
+  async getEvaluationCriteria(competencyId: number): Promise<EvaluationCriteria[]> {
+    return Array.from(this.evaluationCriteria.values()).filter(
+      (criteria) => criteria.competencyId === competencyId
+    );
+  }
+
+  async getEvaluationCriteriaItem(id: number): Promise<EvaluationCriteria | undefined> {
+    return this.evaluationCriteria.get(id);
+  }
+
+  async createEvaluationCriteria(criteria: InsertEvaluationCriteria): Promise<EvaluationCriteria> {
+    const id = this.criteriaIdCounter++;
+    const now = new Date();
+    const newCriteria: EvaluationCriteria = { ...criteria, id, createdAt: now };
+    this.evaluationCriteria.set(id, newCriteria);
+    return newCriteria;
+  }
+
+  async updateEvaluationCriteria(id: number, criteriaData: Partial<InsertEvaluationCriteria>): Promise<EvaluationCriteria | undefined> {
+    const existingCriteria = this.evaluationCriteria.get(id);
+    if (!existingCriteria) return undefined;
+    
+    const updatedCriteria = { ...existingCriteria, ...criteriaData };
+    this.evaluationCriteria.set(id, updatedCriteria);
+    return updatedCriteria;
+  }
+
+  async deleteEvaluationCriteria(id: number): Promise<boolean> {
+    return this.evaluationCriteria.delete(id);
+  }
+
   // Competency Assessment methods
   async getCompetencyAssessments(params: { classId?: number, studentId?: number, competencyId?: number, teacherId?: number }): Promise<CompetencyAssessment[]> {
     return Array.from(this.competencyAssessments.values()).filter(assessment => {
