@@ -38,7 +38,7 @@ export default function NewCompetencyPage({ teacherInfo }: NewCompetencyPageProp
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const [navigate] = useLocation();
+  const [location, setLocation] = useLocation();
 
   // Chargement des référentiels
   useEffect(() => {
@@ -116,7 +116,7 @@ export default function NewCompetencyPage({ teacherInfo }: NewCompetencyPageProp
       
       // Rediriger vers la page des compétences
       setTimeout(() => {
-        navigate("/competencies" as any);
+        setLocation("/competencies");
       }, 500);
     } catch (error) {
       console.error("Erreur lors de la création de la compétence:", error);
@@ -139,7 +139,7 @@ export default function NewCompetencyPage({ teacherInfo }: NewCompetencyPageProp
           
           <div className="bg-white shadow-sm rounded-lg p-6 text-center">
             <p className="text-gray-600 mb-4">Vous devez d'abord créer un référentiel de compétences avant de pouvoir ajouter des compétences.</p>
-            <Button onClick={() => navigate("/competencies/new-framework" as any)}>
+            <Button onClick={() => setLocation("/competencies/new-framework")}>
               Créer un référentiel
             </Button>
           </div>

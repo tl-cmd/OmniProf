@@ -34,7 +34,7 @@ interface NewFrameworkPageProps {
 export default function NewFrameworkPage({ teacherInfo }: NewFrameworkPageProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const [navigate] = useLocation();
+  const [location, setLocation] = useLocation();
 
   // Configuration du formulaire
   const form = useForm<FrameworkFormValues>({
@@ -81,7 +81,7 @@ export default function NewFrameworkPage({ teacherInfo }: NewFrameworkPageProps)
       
       // Rediriger vers la page des compétences
       setTimeout(() => {
-        navigate("/competencies" as any);
+        setLocation("/competencies");
       }, 500);
     } catch (error) {
       console.error("Erreur lors de la création du référentiel:", error);
@@ -139,7 +139,7 @@ export default function NewFrameworkPage({ teacherInfo }: NewFrameworkPageProps)
                 <Button 
                   type="button" 
                   variant="outline" 
-                  onClick={() => navigate("/competencies" as any)}
+                  onClick={() => setLocation("/competencies")}
                 >
                   Annuler
                 </Button>
