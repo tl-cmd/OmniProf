@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -15,58 +15,75 @@ type CompetencyProgress = {
 
 export function SkillsProgressOverview() {
   const [selectedClassId, setSelectedClassId] = useState<string>("all");
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [competencies, setCompetencies] = useState<Competency[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [competencyProgress, setCompetencyProgress] = useState<CompetencyProgress[]>([]);
   
-  // Utilisation des données du localStorage au lieu d'une requête API
-  const classes: Class[] = JSON.parse(localStorage.getItem('classes') || '[]');
-  const isLoadingClasses = false;
-  
-  // Récupération des données de compétences depuis le localStorage
-  const storedCompetencies = localStorage.getItem('competencies') || '[]';
-  const competencies: Competency[] = JSON.parse(storedCompetencies);
-  const competencyData = {
-    frameworks: [],
-    competencies: competencies.length > 0 
-      ? competencies 
-      : [
-          { id: 1, name: "Résoudre des problèmes", description: "", code: null, frameworkId: 1, createdAt: new Date() },
-          { id: 2, name: "Utiliser les nombres relatifs", description: "", code: null, frameworkId: 1, createdAt: new Date() },
-          { id: 3, name: "Calculer avec des fractions", description: "", code: null, frameworkId: 1, createdAt: new Date() },
-          { id: 4, name: "Utiliser le théorème de Pythagore", description: "", code: null, frameworkId: 1, createdAt: new Date() },
-          { id: 5, name: "Calculer une expression littérale", description: "", code: null, frameworkId: 1, createdAt: new Date() },
-          { id: 6, name: "Résoudre des équations", description: "", code: null, frameworkId: 1, createdAt: new Date() },
-        ]
-  };
-  const isLoadingCompetencies = false;
-  
-  // Récupération des évaluations de compétences depuis le localStorage
-  const assessments = JSON.parse(localStorage.getItem('competencyAssessments') || '[]');
-  const isLoadingAssessments = false;
-  
-  const isLoading = isLoadingClasses || isLoadingCompetencies || isLoadingAssessments;
-  
-  // Calculate competency progress statistics
-  const competencyProgress: CompetencyProgress[] = !isLoading && competencyData ? competencyData.competencies.map(comp => {
-    // In a real app, you would calculate these values from assessments and classes
-    // For now, we'll use mock data
-    const mockStats: { [key: number]: { percent: number, evaluated: number, total: number } } = {
-      1: { percent: 78, evaluated: 21, total: 28 },
-      2: { percent: 62, evaluated: 24, total: 28 },
-      3: { percent: 45, evaluated: 28, total: 28 },
-      4: { percent: 85, evaluated: 26, total: 28 },
-      5: { percent: 68, evaluated: 25, total: 28 },
-      6: { percent: 72, evaluated: 28, total: 28 },
-    };
+  useEffect(() => {
+    // Chargement des classes depuis localStorage
+    try {
+      const storedClasses = localStorage.getItem('classes');
+      if (storedClasses) {
+        setClasses(JSON.parse(storedClasses));
+      }
+    } catch (error) {
+      console.error("Erreur lors du chargement des classes:", error);
+    }
     
-    const stats = mockStats[comp.id] || { percent: 0, evaluated: 0, total: 0 };
+    // Chargement des compétences depuis localStorage
+    try {
+      const storedCompetencies = localStorage.getItem('competencies');
+      const parsedCompetencies = storedCompetencies ? JSON.parse(storedCompetencies) : [];
+      
+      // Si aucune compétence n'est stockée, créer des données de démonstration
+      const comps = parsedCompetencies.length > 0 
+        ? parsedCompetencies
+        : [
+            { id: 1, name: "Résoudre des problèmes", description: "", code: null, frameworkId: 1, createdAt: new Date().toISOString() },
+            { id: 2, name: "Utiliser les nombres relatifs", description: "", code: null, frameworkId: 1, createdAt: new Date().toISOString() },
+            { id: 3, name: "Calculer avec des fractions", description: "", code: null, frameworkId: 1, createdAt: new Date().toISOString() },
+            { id: 4, name: "Utiliser le théorème de Pythagore", description: "", code: null, frameworkId: 1, createdAt: new Date().toISOString() },
+            { id: 5, name: "Calculer une expression littérale", description: "", code: null, frameworkId: 1, createdAt: new Date().toISOString() },
+            { id: 6, name: "Résoudre des équations", description: "", code: null, frameworkId: 1, createdAt: new Date().toISOString() },
+          ];
+      
+      setCompetencies(comps);
+      
+      // Si nous avons créé des compétences de démonstration, les enregistrer dans localStorage
+      if (parsedCompetencies.length === 0) {
+        localStorage.setItem('competencies', JSON.stringify(comps));
+      }
+      
+      // Calcul des statistiques de progression pour chaque compétence
+      const mockStats: { [key: number]: { percent: number, evaluated: number, total: number } } = {
+        1: { percent: 78, evaluated: 21, total: 28 },
+        2: { percent: 62, evaluated: 24, total: 28 },
+        3: { percent: 45, evaluated: 28, total: 28 },
+        4: { percent: 85, evaluated: 26, total: 28 },
+        5: { percent: 68, evaluated: 25, total: 28 },
+        6: { percent: 72, evaluated: 28, total: 28 },
+      };
+      
+      const progress = comps.map(comp => {
+        const stats = mockStats[comp.id] || { percent: 0, evaluated: 0, total: 0 };
+        
+        return {
+          id: comp.id,
+          name: comp.name,
+          percentComplete: stats.percent,
+          studentsEvaluated: stats.evaluated,
+          totalStudents: stats.total
+        };
+      });
+      
+      setCompetencyProgress(progress);
+    } catch (error) {
+      console.error("Erreur lors du chargement des compétences:", error);
+    }
     
-    return {
-      id: comp.id,
-      name: comp.name,
-      percentComplete: stats.percent,
-      studentsEvaluated: stats.evaluated,
-      totalStudents: stats.total
-    };
-  }) : [];
+    setIsLoading(false);
+  }, []);
 
   const getColorClass = (percent: number) => {
     if (percent >= 75) return "text-green-600 bg-success";

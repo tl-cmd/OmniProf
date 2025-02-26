@@ -1,5 +1,5 @@
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { Class } from "@shared/schema";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -7,9 +7,64 @@ import { CheckCircle, Calendar } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function ClassesOverview() {
-  // Utilisation des données du localStorage au lieu d'une requête API
-  const classes = JSON.parse(localStorage.getItem('classes') || '[]');
-  const isLoading = false;
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    // Chargement des classes depuis localStorage
+    try {
+      const storedClasses = localStorage.getItem('classes');
+      if (storedClasses) {
+        setClasses(JSON.parse(storedClasses));
+      } else {
+        // Création de données de démonstration si aucune classe n'est trouvée
+        const now = new Date();
+        const demoClasses: Class[] = [
+          {
+            id: 1,
+            name: "3e A",
+            level: "3e",
+            subject: "Mathématiques",
+            studentCount: 28,
+            teacherId: 1,
+            nextSessionDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2, 14, 0),
+            progress: 65,
+            createdAt: new Date()
+          },
+          {
+            id: 2,
+            name: "4e B",
+            level: "4e",
+            subject: "Mathématiques",
+            studentCount: 26,
+            teacherId: 1,
+            nextSessionDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 10, 0),
+            progress: 45,
+            createdAt: new Date()
+          },
+          {
+            id: 3,
+            name: "6e C",
+            level: "6e",
+            subject: "Mathématiques",
+            studentCount: 24,
+            teacherId: 1,
+            nextSessionDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 8, 0),
+            progress: 92,
+            createdAt: new Date()
+          }
+        ];
+        
+        // Sauvegarde dans le localStorage pour une utilisation future
+        localStorage.setItem('classes', JSON.stringify(demoClasses));
+        setClasses(demoClasses);
+      }
+    } catch (error) {
+      console.error("Erreur lors du chargement des classes:", error);
+    }
+    
+    setIsLoading(false);
+  }, []);
 
   if (isLoading) {
     return (

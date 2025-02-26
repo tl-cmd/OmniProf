@@ -1,0 +1,61 @@
+Si tu veux te baser sur la logique du référentiel CIEL (ou tout autre référentiel de compétences pro), l’idée est souvent de distinguer :
+
+1. **Le « savoir »** (ce qu’on doit connaître : les notions, les contenus théoriques, la réglementation, etc.)  
+2. **Le « savoir-faire »** ou « critères techniques » (ce qu’on doit être capable de faire concrètement, en termes d’opérations, de gestes professionnels, de production, d’analyses, de réglages, etc.)  
+3. **Le « savoir-être »** (attitudes, comportements, communication, respect des consignes, etc.)
+
+Dans le référentiel Bac Pro CIEL, tu retrouves déjà des **critères d’évaluation** qui s’appuient sur ces trois piliers :  
+- Les **savoirs** (niveau d’information, de compréhension, etc.)  
+- Les **savoir-faire** (niveaux d’application ou de maîtrise d’outils)  
+- Les **savoir-être** (respect des règles, travail en équipe, posture pro, etc.)
+
+### Comment traduire ça en « critères techniques » ?
+Les « critères techniques », c’est très souvent le **cœur opérationnel** : ce que l’élève ou l’apprenti doit être capable de produire ou de réaliser avec la qualité attendue. Exemple pour la compétence « C03 Participer à un projet » :  
+- Critère technique A : « Planifier sa partie de la tâche dans le respect du planning général ».  
+- Critère technique B : « Suivre l’avancement et renseigner l’équipe sur l’état d’avancement de la tâche ».  
+- Etc.
+
+Ici, on est vraiment sur **« Quelles actions / réalisations concrètes prouvent la maîtrise de la compétence ? »**. 
+
+### Dans une appli de gestion de compétences
+- Tu peux avoir un « catalogue » de compétences (C01, C02, C03, etc.).  
+- Pour chaque compétence, tu crées **des critères techniques** (ou « indicateurs de performance ») qui décrivent comment on juge que la compétence est acquise.  
+- Tu peux aussi ajouter **les savoirs** (sous forme de référentiel de contenus théoriques) et **le savoir-être** (plus transversal).  
+
+La logique est donc :
+1. **Compétence** (ex. C03 Participer à un projet)  
+2. **Critères techniques** (ex. planifier, renseigner l’équipe, ajuster son travail)  
+3. **Savoirs associés** (ex. connaître la méthodologie de projet, les outils de suivi, le vocabulaire technique)  
+4. **Savoir-être** (ex. faire preuve de persévérance, respecter la parole des autres, etc.)
+
+### Concrètement, comment faire ?
+- Dans ton appli, tu peux permettre à l’enseignant de **renseigner** pour chaque compétence :  
+  - **Les savoirs associés** (un champ texte ou liste de notions),  
+  - **Les critères techniques** (liste de points observables),  
+  - **Le savoir-être** (démarche, posture, respect, etc.).  
+- Ensuite, lors de l’évaluation, l’enseignant peut cocher ou noter chaque critère technique et, si nécessaire, faire des commentaires pour le savoir-être.  
+
+### Exemple
+Prenons la compétence C07 (Réaliser des maquettes et prototypes) :  
+- **Critères techniques**  
+  1. Sélectionne et vérifie les composants ou matières premières adéquats (conformité à la nomenclature).  
+  2. Réalise le brasage CMS selon les normes IPC.  
+  3. Effectue les contrôles visuels et électriques intermédiaires.  
+  4. Renseigne la fiche de suivi du prototype.  
+- **Savoirs associés**  
+  - Connaître les bases du brasage (alliages, température, flux, etc.)  
+  - Connaître les normes IPC pour l’assemblage.  
+  - Savoir lire un synoptique électronique, etc.  
+- **Savoir-être**  
+  - Adopter les règles de sécurité (EPI, posture, ESD).  
+  - Travailler avec soin et précision, etc.
+
+Le tout permet de clarifier pour l’apprenant ce qui est attendu, et pour toi (ou l’enseignant) comment évaluer de manière structurée.
+
+---
+
+**TL;DR** :  
+- Les « critères techniques » correspondent généralement aux **indicateurs concrets** de réalisation et de qualité pour une compétence donnée.  
+- Ils sont complémentaires des **savoirs** (connaissances théoriques) et du **savoir-être** (attitudes).  
+- Dans ton appli, tu peux les ranger dans des champs distincts afin de bien séparer la partie « Quoi faire » (critères techniques) de « Quoi savoir » (savoirs) et de « Comment se comporter » (savoir-être).  
+- Les référentiels officiels (comme le Bac Pro CIEL) donnent déjà des pistes pour construire ces critères (il suffit de s’appuyer sur la colonne « Critères d’évaluation » et sur les activités professionnelles).  
