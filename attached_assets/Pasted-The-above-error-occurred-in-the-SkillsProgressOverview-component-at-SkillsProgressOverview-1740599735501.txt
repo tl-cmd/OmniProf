@@ -1,0 +1,39 @@
+The above error occurred in the <SkillsProgressOverview> component:
+
+    at SkillsProgressOverview (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/src/components/dashboard/skills-progress-overview.tsx:25:49)
+    at div
+    at div
+    at main
+    at div
+    at div
+    at AppLayout (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/src/components/layout/app-layout.tsx:19:29)
+    at DashboardPage (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/src/pages/dashboard-page.tsx:22:41)
+    at HomePage
+    at Route (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=6a5b0bc8:323:16)
+    at Switch (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=6a5b0bc8:379:17)
+    at Router (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/src/App.tsx?v=rNCDIhZ5Pyc4gBw3Um3Z8:76:33)
+    at App
+    at QueryClientProvider (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=3ebb4f22:2805:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+The above error occurred in the <UpcomingEvents> component:
+
+    at UpcomingEvents (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/src/components/dashboard/upcoming-events.tsx:26:39)
+    at div
+    at div
+    at main
+    at div
+    at div
+    at AppLayout (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/src/components/layout/app-layout.tsx:19:29)
+    at DashboardPage (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/src/pages/dashboard-page.tsx:22:41)
+    at HomePage
+    at Route (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=6a5b0bc8:323:16)
+    at Switch (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=6a5b0bc8:379:17)
+    at Router (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/src/App.tsx?v=rNCDIhZ5Pyc4gBw3Um3Z8:76:33)
+    at App
+    at QueryClientProvider (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=3ebb4f22:2805:3)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+No QueryClient set, use QueryClientProvider to set one

@@ -1,19 +1,29 @@
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Event } from "@shared/schema";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useState, useEffect } from "react";
 
 export function UpcomingEvents() {
-  const { data: events, isLoading } = useQuery<Event[]>({
-    queryKey: ['/api/events'],
-    queryFn: async () => {
-      // In a real app, we would fetch events from the API
-      // For now, we'll return mock data for demonstration
+  const [events, setEvents] = useState<Event[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    // Essayer de récupérer les événements depuis le localStorage
+    const storedEvents = localStorage.getItem('events');
+    
+    if (storedEvents) {
+      try {
+        setEvents(JSON.parse(storedEvents));
+      } catch (error) {
+        console.error("Erreur lors de la récupération des événements:", error);
+      }
+    } else {
+      // Générer des données de démonstration si aucun événement n'est trouvé
       const now = new Date();
-      return [
+      const demoEvents = [
         {
           id: 1,
           title: "Cours - 3e A",
@@ -59,8 +69,14 @@ export function UpcomingEvents() {
           createdAt: new Date()
         }
       ];
+      
+      // Sauvegarde dans le localStorage pour une utilisation future
+      localStorage.setItem('events', JSON.stringify(demoEvents));
+      setEvents(demoEvents);
     }
-  });
+    
+    setIsLoading(false);
+  }, []);
 
   if (isLoading) {
     return (

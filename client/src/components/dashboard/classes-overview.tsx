@@ -7,9 +7,9 @@ import { CheckCircle, Calendar } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function ClassesOverview() {
-  const { data: classes, isLoading } = useQuery<Class[]>({
-    queryKey: ['/api/classes'],
-  });
+  // Utilisation des données du localStorage au lieu d'une requête API
+  const classes = JSON.parse(localStorage.getItem('classes') || '[]');
+  const isLoading = false;
 
   if (isLoading) {
     return (

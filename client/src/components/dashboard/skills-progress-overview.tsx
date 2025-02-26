@@ -1,9 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Class, Competency, CompetencyAssessment } from "@shared/schema";
+import { Class, Competency } from "@shared/schema";
 
 // Type to hold aggregated competency data with statistics
 type CompetencyProgress = {
@@ -17,40 +16,31 @@ type CompetencyProgress = {
 export function SkillsProgressOverview() {
   const [selectedClassId, setSelectedClassId] = useState<string>("all");
   
-  // Fetch classes
-  const { data: classes, isLoading: isLoadingClasses } = useQuery<Class[]>({
-    queryKey: ['/api/classes'],
-  });
+  // Utilisation des données du localStorage au lieu d'une requête API
+  const classes: Class[] = JSON.parse(localStorage.getItem('classes') || '[]');
+  const isLoadingClasses = false;
   
-  // Fetch competencies
-  const { data: competencyData, isLoading: isLoadingCompetencies } = useQuery<{ frameworks: any[], competencies: Competency[] }>({
-    queryKey: ['/api/competencies/all'],
-    queryFn: async () => {
-      // In a real app, you would have an API endpoint that returns all competencies
-      // For now, we'll mock the data
-      return {
-        frameworks: [],
-        competencies: [
-          { id: 1, name: "Résoudre des problèmes", description: "", frameworkId: 1, createdAt: new Date() },
-          { id: 2, name: "Utiliser les nombres relatifs", description: "", frameworkId: 1, createdAt: new Date() },
-          { id: 3, name: "Calculer avec des fractions", description: "", frameworkId: 1, createdAt: new Date() },
-          { id: 4, name: "Utiliser le théorème de Pythagore", description: "", frameworkId: 1, createdAt: new Date() },
-          { id: 5, name: "Calculer une expression littérale", description: "", frameworkId: 1, createdAt: new Date() },
-          { id: 6, name: "Résoudre des équations", description: "", frameworkId: 1, createdAt: new Date() },
+  // Récupération des données de compétences depuis le localStorage
+  const storedCompetencies = localStorage.getItem('competencies') || '[]';
+  const competencies: Competency[] = JSON.parse(storedCompetencies);
+  const competencyData = {
+    frameworks: [],
+    competencies: competencies.length > 0 
+      ? competencies 
+      : [
+          { id: 1, name: "Résoudre des problèmes", description: "", code: null, frameworkId: 1, createdAt: new Date() },
+          { id: 2, name: "Utiliser les nombres relatifs", description: "", code: null, frameworkId: 1, createdAt: new Date() },
+          { id: 3, name: "Calculer avec des fractions", description: "", code: null, frameworkId: 1, createdAt: new Date() },
+          { id: 4, name: "Utiliser le théorème de Pythagore", description: "", code: null, frameworkId: 1, createdAt: new Date() },
+          { id: 5, name: "Calculer une expression littérale", description: "", code: null, frameworkId: 1, createdAt: new Date() },
+          { id: 6, name: "Résoudre des équations", description: "", code: null, frameworkId: 1, createdAt: new Date() },
         ]
-      };
-    },
-  });
+  };
+  const isLoadingCompetencies = false;
   
-  // Fetch assessments
-  const { data: assessments, isLoading: isLoadingAssessments } = useQuery<CompetencyAssessment[]>({
-    queryKey: ['/api/competency-assessments', { classId: selectedClassId !== "all" ? parseInt(selectedClassId) : undefined }],
-    queryFn: async () => {
-      // In a real app, you would fetch the actual assessments
-      // For now, we'll return mock data
-      return [];
-    },
-  });
+  // Récupération des évaluations de compétences depuis le localStorage
+  const assessments = JSON.parse(localStorage.getItem('competencyAssessments') || '[]');
+  const isLoadingAssessments = false;
   
   const isLoading = isLoadingClasses || isLoadingCompetencies || isLoadingAssessments;
   
