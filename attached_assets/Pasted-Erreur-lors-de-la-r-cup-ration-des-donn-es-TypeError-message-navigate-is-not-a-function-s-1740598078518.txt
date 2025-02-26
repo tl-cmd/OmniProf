@@ -1,0 +1,78 @@
+Erreur lors de la récupération des données: 
+TypeError {}
+message: "navigate is not a function"
+stack: "TypeError: navigate is not a function↵ at fetchData (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/src/pages/framework-detail-page.tsx:69:11)↵ at https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/src/pages/framework-detail-page.tsx:102:5↵ at commitHookEffectListMount (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:16915:34)↵ at commitPassiveMountOnFiber (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:18156:19)↵ at commitPassiveMountEffects_complete (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:18129:17)↵ at commitPassiveMountEffects_begin (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:18119:15)↵ at commitPassiveMountEffects (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:18109:11)↵ at flushPassiveEffectsImpl (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:19490:11)↵ at flushPassiveEffects (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:19447:22)↵ at performSyncWorkOnRoot (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:18868:11)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object
+constructor: ƒ TypeError()
+message: "navigate is not a function"
+name: "TypeError"
+[[Prototype]]: Object
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+message: "navigate is not a function"
+stack: "TypeError: navigate is not a function↵ at fetchData (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/src/pages/framework-detail-page.tsx:69:11)↵ at https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/src/pages/framework-detail-page.tsx:102:5↵ at commitHookEffectListMount (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:16915:34)↵ at commitPassiveMountOnFiber (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:18156:19)↵ at commitPassiveMountEffects_complete (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:18129:17)↵ at commitPassiveMountEffects_begin (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:18119:15)↵ at commitPassiveMountEffects (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:18109:11)↵ at flushPassiveEffectsImpl (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:19490:11)↵ at flushPassiveEffects (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:19447:22)↵ at performSyncWorkOnRoot (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-RPCDYKBN.js?v=2a1a7c38:18868:11)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+Erreur lors de la récupération des données: 
+TypeError {}
+
+at t.value (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://2801f639-5add-4924-946f-a5648298033a-00-3td35l8lxp9b1.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400

@@ -208,14 +208,17 @@ function Router() {
         } 
       />
       <Route 
-        path="/competencies/framework/:id" 
-        component={(params: { id?: string }) => 
-          <ProtectedRoute 
-            path="/competencies/framework/:id" 
-            component={(props) => <FrameworkDetailPage {...props} frameworkId={params.id} />} 
-            teacher={teacher} 
-          />
-        } 
+        path="/competencies/framework/:id"
+        component={(props) => {
+          const { id } = props.params;
+          return (
+            <ProtectedRoute 
+              path="/competencies/framework/:id" 
+              component={(routeProps) => <FrameworkDetailPage {...routeProps} frameworkId={id} />} 
+              teacher={teacher} 
+            />
+          );
+        }} 
       />
       
       {/* Routes pour les séquences */}

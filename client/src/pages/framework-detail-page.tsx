@@ -57,7 +57,7 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
   const [isEditingFramework, setIsEditingFramework] = useState(false);
   const [isAddingCompetency, setIsAddingCompetency] = useState(false);
   const { toast } = useToast();
-  const [navigate] = useLocation();
+  const [_, navigate] = useLocation();
 
   // Récupérer le référentiel et ses compétences
   useEffect(() => {
