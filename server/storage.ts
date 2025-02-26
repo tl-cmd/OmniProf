@@ -6,6 +6,8 @@ import {
   Student, InsertStudent,
   CompetencyFramework, InsertCompetencyFramework,
   Competency, InsertCompetency,
+  Knowledge, InsertKnowledge,
+  EvaluationCriteria, InsertEvaluationCriteria,
   CompetencyAssessment, InsertCompetencyAssessment,
   Sequence, InsertSequence,
   Resource, InsertResource,
@@ -48,6 +50,20 @@ export interface IStorage {
   updateCompetency(id: number, competency: Partial<InsertCompetency>): Promise<Competency | undefined>;
   deleteCompetency(id: number): Promise<boolean>;
   
+  // Knowledge methods
+  getKnowledge(competencyId: number): Promise<Knowledge[]>;
+  getKnowledgeItem(id: number): Promise<Knowledge | undefined>;
+  createKnowledge(knowledge: InsertKnowledge): Promise<Knowledge>;
+  updateKnowledge(id: number, knowledge: Partial<InsertKnowledge>): Promise<Knowledge | undefined>;
+  deleteKnowledge(id: number): Promise<boolean>;
+  
+  // Evaluation Criteria methods
+  getEvaluationCriteria(competencyId: number): Promise<EvaluationCriteria[]>;
+  getEvaluationCriteriaItem(id: number): Promise<EvaluationCriteria | undefined>;
+  createEvaluationCriteria(criteria: InsertEvaluationCriteria): Promise<EvaluationCriteria>;
+  updateEvaluationCriteria(id: number, criteria: Partial<InsertEvaluationCriteria>): Promise<EvaluationCriteria | undefined>;
+  deleteEvaluationCriteria(id: number): Promise<boolean>;
+  
   // Competency Assessment methods
   getCompetencyAssessments(params: { classId?: number, studentId?: number, competencyId?: number, teacherId?: number }): Promise<CompetencyAssessment[]>;
   getCompetencyAssessment(id: number): Promise<CompetencyAssessment | undefined>;
@@ -86,6 +102,8 @@ export class MemStorage implements IStorage {
   private students: Map<number, Student>;
   private competencyFrameworks: Map<number, CompetencyFramework>;
   private competencies: Map<number, Competency>;
+  private knowledge: Map<number, Knowledge>;
+  private evaluationCriteria: Map<number, EvaluationCriteria>;
   private competencyAssessments: Map<number, CompetencyAssessment>;
   private sequences: Map<number, Sequence>;
   private resources: Map<number, Resource>;
@@ -98,6 +116,8 @@ export class MemStorage implements IStorage {
   private studentIdCounter: number = 1;
   private frameworkIdCounter: number = 1;
   private competencyIdCounter: number = 1;
+  private knowledgeIdCounter: number = 1;
+  private criteriaIdCounter: number = 1;
   private assessmentIdCounter: number = 1;
   private sequenceIdCounter: number = 1;
   private resourceIdCounter: number = 1;
@@ -109,6 +129,8 @@ export class MemStorage implements IStorage {
     this.students = new Map();
     this.competencyFrameworks = new Map();
     this.competencies = new Map();
+    this.knowledge = new Map();
+    this.evaluationCriteria = new Map();
     this.competencyAssessments = new Map();
     this.sequences = new Map();
     this.resources = new Map();

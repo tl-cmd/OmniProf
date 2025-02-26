@@ -77,6 +77,7 @@ export const competencies = pgTable("competencies", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
+  code: text("code"), // Ex: C01, C02, etc.
   frameworkId: integer("framework_id").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -84,7 +85,38 @@ export const competencies = pgTable("competencies", {
 export const insertCompetencySchema = createInsertSchema(competencies).pick({
   name: true,
   description: true,
+  code: true,
   frameworkId: true,
+});
+
+// Knowledge associated with competencies
+export const knowledge = pgTable("knowledge", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  taxonomicLevel: integer("taxonomic_level"), // Niveau taxonomique (1, 2, 3)
+  competencyId: integer("competency_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertKnowledgeSchema = createInsertSchema(knowledge).pick({
+  name: true,
+  taxonomicLevel: true,
+  competencyId: true,
+});
+
+// Evaluation criteria for competencies
+export const evaluationCriteria = pgTable("evaluation_criteria", {
+  id: serial("id").primaryKey(),
+  description: text("description").notNull(),
+  competencyId: integer("competency_id").notNull(),
+  type: text("type").notNull(), // 'technical' ou 'behavior'
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertEvaluationCriteriaSchema = createInsertSchema(evaluationCriteria).pick({
+  description: true,
+  competencyId: true,
+  type: true,
 });
 
 // Competency Assessments
@@ -205,3 +237,9 @@ export type InsertResource = z.infer<typeof insertResourceSchema>;
 
 export type Event = typeof events.$inferSelect;
 export type InsertEvent = z.infer<typeof insertEventSchema>;
+
+export type Knowledge = typeof knowledge.$inferSelect;
+export type InsertKnowledge = z.infer<typeof insertKnowledgeSchema>;
+
+export type EvaluationCriteria = typeof evaluationCriteria.$inferSelect;
+export type InsertEvaluationCriteria = z.infer<typeof insertEvaluationCriteriaSchema>;
