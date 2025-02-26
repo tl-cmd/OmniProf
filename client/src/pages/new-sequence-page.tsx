@@ -146,7 +146,7 @@ export default function NewSequencePage({ teacherInfo }: NewSequencePageProps) {
       
       // Rediriger vers la liste des séquences
       setTimeout(() => {
-        navigate("/sequences");
+        navigate("/sequences" as any);
       }, 500);
     } catch (error) {
       console.error("Erreur lors de la création de la séquence:", error);
@@ -393,7 +393,7 @@ export default function NewSequencePage({ teacherInfo }: NewSequencePageProps) {
                 <Button 
                   type="button" 
                   variant="outline" 
-                  onClick={() => navigate("/sequences")}
+                  onClick={() => navigate("/sequences" as any)}
                 >
                   Annuler
                 </Button>

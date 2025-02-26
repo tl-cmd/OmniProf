@@ -139,7 +139,7 @@ export default function NewCompetencyPage({ teacherInfo }: NewCompetencyPageProp
           
           <div className="bg-white shadow-sm rounded-lg p-6 text-center">
             <p className="text-gray-600 mb-4">Vous devez d'abord créer un référentiel de compétences avant de pouvoir ajouter des compétences.</p>
-            <Button onClick={() => navigate("/competencies/new-framework")}>
+            <Button onClick={() => navigate("/competencies/new-framework" as any)}>
               Créer un référentiel
             </Button>
           </div>
@@ -220,7 +220,7 @@ export default function NewCompetencyPage({ teacherInfo }: NewCompetencyPageProp
                 <Button 
                   type="button" 
                   variant="outline" 
-                  onClick={() => navigate("/competencies")}
+                  onClick={() => navigate("/competencies" as any)}
                 >
                   Annuler
                 </Button>

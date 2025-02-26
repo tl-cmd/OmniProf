@@ -138,7 +138,7 @@ export default function NewResourcePage({ teacherInfo }: NewResourcePageProps) {
       
       // Rediriger vers la page des ressources
       setTimeout(() => {
-        navigate("/resources");
+        navigate("/resources" as any);
       }, 500);
     } catch (error) {
       console.error("Erreur lors de la création de la ressource:", error);
@@ -284,7 +284,7 @@ export default function NewResourcePage({ teacherInfo }: NewResourcePageProps) {
                 <Button 
                   type="button" 
                   variant="outline" 
-                  onClick={() => navigate("/resources")}
+                  onClick={() => navigate("/resources" as any)}
                 >
                   Annuler
                 </Button>
