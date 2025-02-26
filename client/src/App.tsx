@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import DashboardPage from "@/pages/dashboard-page";
 import ClassesPage from "@/pages/classes-page";
+import NewClassPage from "@/pages/new-class-page";
 import CompetenciesPage from "@/pages/competencies-page";
 import SequencesPage from "@/pages/sequences-page";
 import ResourcesPage from "@/pages/resources-page";
@@ -171,6 +172,12 @@ function Router() {
         path="/classes" 
         component={() => 
           <ProtectedRoute path="/classes" component={ClassesPage} teacher={teacher} />
+        } 
+      />
+      <Route 
+        path="/classes/new" 
+        component={() => 
+          <ProtectedRoute path="/classes/new" component={NewClassPage} teacher={teacher} />
         } 
       />
       <Route 

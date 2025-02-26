@@ -1,24 +1,63 @@
 import { AppLayout } from "@/components/layout/app-layout";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Class } from "@shared/schema";
 import { Plus, CheckCircle, Calendar, Users, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Teacher } from "../App";
+import { useToast } from "@/hooks/use-toast";
 
-export default function ClassesPage() {
+interface ClassesPageProps {
+  teacherInfo: Teacher;
+}
+
+export default function ClassesPage({ teacherInfo }: ClassesPageProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
   
-  const { data: classes, isLoading } = useQuery<Class[]>({
-    queryKey: ['/api/classes'],
-  });
+  // Charger les classes depuis le localStorage au chargement
+  useEffect(() => {
+    const fetchClasses = () => {
+      setIsLoading(true);
+      try {
+        // Récupérer les classes du localStorage
+        const storedClasses = localStorage.getItem('classes');
+        if (storedClasses) {
+          const parsedClasses = JSON.parse(storedClasses) as Class[];
+          // Filtrer les classes qui appartiennent à cet utilisateur
+          // Nous utilisons le nom complet de l'enseignant comme identifiant
+          const teacherClasses = parsedClasses.filter(cls => 
+            String(cls.teacherId) === teacherInfo.fullName
+          );
+          setClasses(teacherClasses);
+        } else {
+          // Aucune classe trouvée, initialiser un tableau vide
+          setClasses([]);
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement des classes:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les classes.",
+          variant: "destructive",
+        });
+        setClasses([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchClasses();
+  }, [teacherInfo.fullName, toast]);
   
   // Filter classes by search query
-  const filteredClasses = classes?.filter(cls => 
+  const filteredClasses = classes.filter(cls => 
     cls.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     cls.level.toLowerCase().includes(searchQuery.toLowerCase()) ||
     cls.subject.toLowerCase().includes(searchQuery.toLowerCase())
@@ -106,7 +145,7 @@ export default function ClassesPage() {
                       </div>
                       <div className="flex items-center text-sm text-gray-500">
                         <CheckCircle className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-                        <span>Progression: {cls.progress}%</span>
+                        <span>Progression: {cls.progress || 0}%</span>
                       </div>
                       <div className="flex items-center text-sm text-gray-500">
                         <Calendar className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
