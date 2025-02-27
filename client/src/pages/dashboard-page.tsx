@@ -1,6 +1,4 @@
-
 import { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { AppLayout } from "@/components/layout/app-layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +9,7 @@ import {
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { Teacher } from "@/App";
 
 type Class = {
   id: number;
@@ -37,8 +36,11 @@ type Event = {
   type: string;
 };
 
-export default function DashboardPage() {
-  const { user } = useAuth();
+interface DashboardPageProps {
+  teacherInfo: Teacher;
+}
+
+export default function DashboardPage({ teacherInfo }: DashboardPageProps) {
   const { toast } = useToast();
   const [classes, setClasses] = useState<Class[]>([]);
   const [sequences, setSequences] = useState<Sequence[]>([]);
@@ -154,7 +156,7 @@ export default function DashboardPage() {
     <AppLayout title="Tableau de bord">
       {/* Bienvenue et statistiques */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-4">Bienvenue, {user?.fullName || "Enseignant"} 👋</h2>
+        <h2 className="text-2xl font-bold mb-4">Bienvenue, {teacherInfo?.fullName || "Enseignant"} 👋</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card>
