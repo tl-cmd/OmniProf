@@ -1,14 +1,14 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { AppLayout } from "@/components/layout/app-layout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   Users, BookOpen, Calendar, Award, Book, FolderOpen, Clock, 
   TrendingUp, CheckCircle, AlertCircle, AlertTriangle
 } from "lucide-react";
-import { Link } from "@/hooks/use-location";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 
