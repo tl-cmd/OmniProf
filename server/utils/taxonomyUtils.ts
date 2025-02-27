@@ -123,48 +123,48 @@ export const taxonomyUtils = {
     
     const competencesCielTaxonomyId = await this.createTaxonomyWithLevels(competencesCielTaxonomy, [
       {
-        name: "C01 - Communication professionnelle",
-        description: "Communiquer en situation professionnelle (français/anglais)",
+        name: "C01 - COMMUNIQUER EN SITUATION PROFESSIONNELLE (FRANÇAIS/ANGLAIS)",
+        description: "CC8/CC9 - Renseigner les documents/Communiquer avec le client",
         level: 1,
       },
       {
-        name: "C03 - Gestion de projet",
-        description: "Participer à un projet, organisation des interventions",
+        name: "C03 - PARTICIPER A UN PROJET",
+        description: "CC2/CC1 - Organiser la réalisation ou l'intervention/S'informer sur l'intervention ou sur la réalisation",
         level: 2,
       },
       {
-        name: "C04 - Analyse de structure",
-        description: "Analyser une structure matérielle et logicielle",
+        name: "C04 - ANALYSER UNE STRUCTURE MATÉRIELLE ET LOGICIELLE",
+        description: "CC3 - Analyser et exploiter les données",
         level: 3,
       },
       {
-        name: "C06 - Validation de conformité",
-        description: "Valider la conformité d'une installation",
+        name: "C06 - VALIDER LA CONFORMITÉ D'UNE INSTALLATION",
+        description: "CC6 - Mettre en service",
         level: 4,
       },
       {
-        name: "C07 - Réalisation technique",
-        description: "Réaliser des maquettes et prototypes",
+        name: "C07 - RÉALISER DES MAQUETTES ET PROTOTYPES",
+        description: "CC4 - Réaliser une installation ou une intervention",
         level: 5,
       },
       {
-        name: "C08 - Développement",
-        description: "Coder, développer des solutions logicielles",
+        name: "C08 - CODER",
+        description: "CC4 - Réaliser une installation ou une intervention",
         level: 6,
       },
       {
-        name: "C09 - Installation",
-        description: "Installer les éléments d'un système électronique ou informatique",
+        name: "C09 - INSTALLER LES ÉLÉMENTS D'UN SYSTÈME ÉLECTRONIQUE OU INFORMATIQUE",
+        description: "CC4 - Réaliser une installation ou une intervention",
         level: 7,
       },
       {
-        name: "C10 - Réseau informatique",
-        description: "Exploiter un réseau informatique",
+        name: "C10 - EXPLOITER UN RÉSEAU INFORMATIQUE",
+        description: "CC5 - Effectuer les opérations préalables",
         level: 8,
       },
       {
-        name: "C11 - Maintenance",
-        description: "Maintenir un système électronique ou réseau informatique",
+        name: "C11 - MAINTENIR UN SYSTÈME ÉLECTRONIQUE OU RÉSEAU INFORMATIQUE",
+        description: "CC7 - Réaliser une opération de maintenance",
         level: 9,
       },
     ]);
