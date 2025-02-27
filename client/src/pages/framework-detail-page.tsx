@@ -50,7 +50,7 @@ const competencySchema = z.object({
 // Schéma de validation pour le savoir associé
 const knowledgeSchema = z.object({
   name: z.string().min(3, "Le nom doit comporter au moins 3 caractères"),
-  taxonomicLevel: z.number().min(1).max(3),
+  taxonomicLevelId: z.number().min(1).max(3),
   competencyId: z.number(),
 });
 
@@ -324,12 +324,12 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
     resolver: zodResolver(knowledgeSchema),
     defaultValues: {
       name: "",
-      taxonomicLevel: 1,
+      taxonomicLevelId: 1,
       competencyId: selectedCompetency?.id || 0,
     },
     values: {
       name: "",
-      taxonomicLevel: 1,
+      taxonomicLevelId: 1,
       competencyId: selectedCompetency?.id || 0,
     }
   });
@@ -428,7 +428,7 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
       const newKnowledge: Knowledge = {
         id: newId,
         name: values.name,
-        taxonomicLevel: values.taxonomicLevel,
+        taxonomicLevelId: values.taxonomicLevelId,
         competencyId: values.competencyId,
         createdAt: new Date(),
       };
@@ -451,7 +451,7 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
       
       addKnowledgeForm.reset({
         name: "",
-        taxonomicLevel: 1,
+        taxonomicLevelId: 1,
         competencyId: selectedCompetency.id,
       });
       
@@ -844,10 +844,10 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
                               <li key={knowledge.id} className="bg-gray-50 p-3 rounded-md flex justify-between items-start">
                                 <div>
                                   <p className="font-medium">{knowledge.name}</p>
-                                  {knowledge.taxonomicLevel && (
+                                  {knowledge.taxonomicLevelId && (
                                     <div className="flex items-center mt-1">
                                       <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-                                        Niveau taxonomique: {knowledge.taxonomicLevel}
+                                        Niveau taxonomique: {knowledge.taxonomicLevelId}
                                       </span>
                                     </div>
                                   )}
@@ -1095,6 +1095,70 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
         </DialogContent>
       </Dialog>
       
+      {/* Dialogue d'édition de compétence */}
+      <Dialog open={isEditingCompetency} onOpenChange={setIsEditingCompetency}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Modifier la compétence</DialogTitle>
+            <DialogDescription>
+              Modifiez les informations de la compétence sélectionnée.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...editCompetencyForm}>
+            <form onSubmit={editCompetencyForm.handleSubmit(handleUpdateCompetency)} className="space-y-6">
+              <FormField
+                control={editCompetencyForm.control}
+                name="code"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Code (optionnel)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="C01" {...field} value={field.value || ""} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={editCompetencyForm.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nom de la compétence</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={editCompetencyForm.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} value={field.value || ""} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setIsEditingCompetency(false)}>
+                  Annuler
+                </Button>
+                <Button type="submit">Enregistrer</Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+      
       {/* Dialogue d'ajout de savoir associé */}
       <Dialog open={isAddingKnowledge} onOpenChange={setIsAddingKnowledge}>
         <DialogContent>
@@ -1128,7 +1192,7 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
               
               <FormField
                 control={addKnowledgeForm.control}
-                name="taxonomicLevel"
+                name="taxonomicLevelId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Niveau taxonomique</FormLabel>
