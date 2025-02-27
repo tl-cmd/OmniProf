@@ -5,6 +5,8 @@ import { Sequence, Class, Competency } from "@shared/schema";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
+import { AppLayout } from "@/components/layout/app-layout";
 import {
   Form,
   FormControl,
@@ -51,7 +53,7 @@ export default function NewSequencePage({ teacherInfo }: NewSequencePageProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const [navigate] = useLocation();
+  const [location, setLocation] = useLocation();
 
   // Chargement des classes et compétences depuis le localStorage
   useEffect(() => {
@@ -146,7 +148,7 @@ export default function NewSequencePage({ teacherInfo }: NewSequencePageProps) {
       
       // Rediriger vers la liste des séquences
       setTimeout(() => {
-        navigate("/sequences" as any);
+        setLocation("/sequences");
       }, 500);
     } catch (error) {
       console.error("Erreur lors de la création de la séquence:", error);
@@ -297,10 +299,11 @@ export default function NewSequencePage({ teacherInfo }: NewSequencePageProps) {
                             mode="single"
                             selected={field.value || undefined}
                             onSelect={field.onChange}
-                            disabled={(date) =>
-                              date < new Date("1900-01-01") || 
-                              (form.getValues("startDate") && date < form.getValues("startDate"))
-                            }
+                            disabled={(date) => {
+                              const startDate = form.getValues("startDate");
+                              return date < new Date("1900-01-01") || 
+                                (!!startDate && date < startDate);
+                            }}
                             initialFocus
                           />
                         </PopoverContent>
@@ -393,7 +396,7 @@ export default function NewSequencePage({ teacherInfo }: NewSequencePageProps) {
                 <Button 
                   type="button" 
                   variant="outline" 
-                  onClick={() => navigate("/sequences" as any)}
+                  onClick={() => setLocation("/sequences")}
                 >
                   Annuler
                 </Button>
