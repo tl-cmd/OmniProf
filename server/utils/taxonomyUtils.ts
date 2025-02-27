@@ -56,33 +56,33 @@ export const taxonomyUtils = {
       },
     ]);
 
-    // Créer la taxonomie CIEL (simplifiée)
+    // Créer la taxonomie CIEL (conforme au référentiel BAC PRO CIEL)
     const cielTaxonomy: InsertTaxonomy = {
-      name: "Référentiel CIEL (Compétences)",
-      description: "Niveaux de maîtrise selon le référentiel CIEL pour l'enseignement professionnel",
+      name: "Référentiel BAC PRO CIEL",
+      description: "Niveaux taxonomiques du référentiel BAC PRO CIEL pour l'enseignement professionnel",
       isDefault: true,
       teacherId: null,
     };
 
     const cielTaxonomyId = await this.createTaxonomyWithLevels(cielTaxonomy, [
       {
-        name: "Information",
-        description: "Je sais de quoi il s'agit, je comprends",
+        name: "Niveau 1",
+        description: "Niveau de l'information (Je sais de quoi il s'agit, je comprends)",
         level: 1,
       },
       {
-        name: "Application",
-        description: "Je sais faire en situation simple avec une aide",
+        name: "Niveau 2",
+        description: "Niveau de l'expression (Je sais en parler, je peux l'expliquer)",
         level: 2,
       },
       {
-        name: "Maîtrise",
-        description: "Je sais faire en situation complexe en autonomie",
+        name: "Niveau 3",
+        description: "Niveau de la maîtrise d'outils (Je sais faire, je maîtrise les outils)",
         level: 3,
       },
       {
-        name: "Expertise",
-        description: "Je sais analyser et adapter ma méthode dans toutes situations",
+        name: "Niveau 4", 
+        description: "Niveau de la maîtrise méthodologique (Je sais choisir les outils et la méthode adaptés)",
         level: 4,
       },
     ]);
@@ -110,6 +110,62 @@ export const taxonomyUtils = {
         name: "Savoir-être",
         description: "Attitudes, comportements, posture, communication",
         level: 3,
+      },
+    ]);
+    
+    // Créer la taxonomie pour les compétences du BAC PRO CIEL
+    const competencesCielTaxonomy: InsertTaxonomy = {
+      name: "Compétences BAC PRO CIEL",
+      description: "Classification des compétences du BAC PRO CIEL (Communication, Analyse, Installation, etc.)",
+      isDefault: true,
+      teacherId: null,
+    };
+    
+    const competencesCielTaxonomyId = await this.createTaxonomyWithLevels(competencesCielTaxonomy, [
+      {
+        name: "C01 - Communication professionnelle",
+        description: "Communiquer en situation professionnelle (français/anglais)",
+        level: 1,
+      },
+      {
+        name: "C03 - Gestion de projet",
+        description: "Participer à un projet, organisation des interventions",
+        level: 2,
+      },
+      {
+        name: "C04 - Analyse de structure",
+        description: "Analyser une structure matérielle et logicielle",
+        level: 3,
+      },
+      {
+        name: "C06 - Validation de conformité",
+        description: "Valider la conformité d'une installation",
+        level: 4,
+      },
+      {
+        name: "C07 - Réalisation technique",
+        description: "Réaliser des maquettes et prototypes",
+        level: 5,
+      },
+      {
+        name: "C08 - Développement",
+        description: "Coder, développer des solutions logicielles",
+        level: 6,
+      },
+      {
+        name: "C09 - Installation",
+        description: "Installer les éléments d'un système électronique ou informatique",
+        level: 7,
+      },
+      {
+        name: "C10 - Réseau informatique",
+        description: "Exploiter un réseau informatique",
+        level: 8,
+      },
+      {
+        name: "C11 - Maintenance",
+        description: "Maintenir un système électronique ou réseau informatique",
+        level: 9,
       },
     ]);
 
