@@ -66,11 +66,15 @@ export const competencyFrameworks = pgTable("competency_frameworks", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertCompetencyFrameworkSchema = createInsertSchema(competencyFrameworks).pick({
-  name: true,
-  description: true,
-  teacherId: true,
-});
+export const insertCompetencyFrameworkSchema = createInsertSchema(competencyFrameworks)
+  .pick({
+    name: true,
+    description: true,
+    teacherId: true,
+  })
+  .extend({
+    description: z.string().optional().nullable(),
+  });
 
 // Competencies
 export const competencies = pgTable("competencies", {
@@ -82,12 +86,17 @@ export const competencies = pgTable("competencies", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertCompetencySchema = createInsertSchema(competencies).pick({
-  name: true,
-  description: true,
-  code: true,
-  frameworkId: true,
-});
+export const insertCompetencySchema = createInsertSchema(competencies)
+  .pick({
+    name: true,
+    description: true,
+    code: true,
+    frameworkId: true,
+  })
+  .extend({
+    description: z.string().optional().nullable(),
+    code: z.string().optional().nullable(),
+  });
 
 // Taxonomies (Bloom, CIEL, etc.)
 export const taxonomies = pgTable("taxonomies", {
@@ -99,12 +108,18 @@ export const taxonomies = pgTable("taxonomies", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertTaxonomySchema = createInsertSchema(taxonomies).pick({
-  name: true,
-  description: true,
-  isDefault: true,
-  teacherId: true,
-});
+export const insertTaxonomySchema = createInsertSchema(taxonomies)
+  .pick({
+    name: true,
+    description: true,
+    isDefault: true,
+    teacherId: true,
+  })
+  .extend({
+    description: z.string().optional().nullable(),
+    isDefault: z.boolean().optional().nullable(),
+    teacherId: z.number().optional().nullable(),
+  });
 
 // Niveaux taxonomiques
 export const taxonomicLevels = pgTable("taxonomic_levels", {
@@ -116,12 +131,16 @@ export const taxonomicLevels = pgTable("taxonomic_levels", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertTaxonomicLevelSchema = createInsertSchema(taxonomicLevels).pick({
-  name: true,
-  description: true,
-  level: true,
-  taxonomyId: true,
-});
+export const insertTaxonomicLevelSchema = createInsertSchema(taxonomicLevels)
+  .pick({
+    name: true,
+    description: true,
+    level: true,
+    taxonomyId: true,
+  })
+  .extend({
+    description: z.string().optional().nullable(),
+  });
 
 // Knowledge associated with competencies
 export const knowledge = pgTable("knowledge", {
@@ -132,11 +151,15 @@ export const knowledge = pgTable("knowledge", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertKnowledgeSchema = createInsertSchema(knowledge).pick({
-  name: true,
-  taxonomicLevelId: true,
-  competencyId: true,
-});
+export const insertKnowledgeSchema = createInsertSchema(knowledge)
+  .pick({
+    name: true,
+    taxonomicLevelId: true,
+    competencyId: true,
+  })
+  .extend({
+    taxonomicLevelId: z.number().optional().nullable(),
+  });
 
 // Evaluation criteria for competencies
 export const evaluationCriteria = pgTable("evaluation_criteria", {
@@ -165,15 +188,20 @@ export const competencyAssessments = pgTable("competency_assessments", {
   notes: text("notes"),
 });
 
-export const insertCompetencyAssessmentSchema = createInsertSchema(competencyAssessments).pick({
-  studentId: true,
-  competencyId: true,
-  score: true,
-  date: true,
-  classId: true,
-  teacherId: true,
-  notes: true,
-});
+export const insertCompetencyAssessmentSchema = createInsertSchema(competencyAssessments)
+  .pick({
+    studentId: true,
+    competencyId: true,
+    score: true,
+    date: true,
+    classId: true,
+    teacherId: true,
+    notes: true,
+  })
+  .extend({
+    notes: z.string().optional().nullable(),
+    date: z.coerce.date().optional()
+  });
 
 // Pedagogical Sequences
 export const sequences = pgTable("sequences", {
@@ -189,16 +217,24 @@ export const sequences = pgTable("sequences", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertSequenceSchema = createInsertSchema(sequences).pick({
-  title: true,
-  description: true,
-  classId: true,
-  teacherId: true,
-  startDate: true,
-  endDate: true,
-  status: true,
-  competencyIds: true,
-});
+export const insertSequenceSchema = createInsertSchema(sequences)
+  .pick({
+    title: true,
+    description: true,
+    classId: true,
+    teacherId: true,
+    startDate: true,
+    endDate: true,
+    status: true,
+    competencyIds: true,
+  })
+  .extend({
+    description: z.string().optional().nullable(),
+    startDate: z.coerce.date().optional().nullable(),
+    endDate: z.coerce.date().optional().nullable(),
+    status: z.string().optional(),
+    competencyIds: z.any().optional(),
+  });
 
 // Resources
 export const resources = pgTable("resources", {
@@ -212,14 +248,20 @@ export const resources = pgTable("resources", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertResourceSchema = createInsertSchema(resources).pick({
-  name: true,
-  type: true,
-  url: true,
-  content: true,
-  teacherId: true,
-  sequenceId: true,
-});
+export const insertResourceSchema = createInsertSchema(resources)
+  .pick({
+    name: true,
+    type: true,
+    url: true,
+    content: true,
+    teacherId: true,
+    sequenceId: true,
+  })
+  .extend({
+    url: z.string().optional().nullable(),
+    content: z.string().optional().nullable(),
+    sequenceId: z.number().optional().nullable(),
+  });
 
 // Events/Schedule
 export const events = pgTable("events", {
@@ -234,15 +276,20 @@ export const events = pgTable("events", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertEventSchema = createInsertSchema(events).pick({
-  title: true,
-  description: true,
-  startDate: true,
-  endDate: true,
-  classId: true,
-  teacherId: true,
-  type: true,
-});
+export const insertEventSchema = createInsertSchema(events)
+  .pick({
+    title: true,
+    description: true,
+    startDate: true,
+    endDate: true,
+    classId: true,
+    teacherId: true,
+    type: true,
+  })
+  .extend({
+    description: z.string().optional().nullable(),
+    classId: z.number().optional().nullable(),
+  });
 
 // Export types
 export type User = typeof users.$inferSelect;
