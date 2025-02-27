@@ -10,15 +10,14 @@ type User = {
   subject?: string;
 };
 
-interface AuthContextType {
+type AuthContextType = {
   user: User | null;
+  loading: boolean;
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, password: string, fullName: string, subject?: string) => Promise<void>;
   logout: () => Promise<void>;
-  loading: boolean;
-}
+};
 
-// Création du contexte avec une valeur par défaut
 const AuthContext = createContext<AuthContextType | null>(null);
 
 // Hook personnalisé pour utiliser le contexte
@@ -66,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       toast({
         title: "Erreur de connexion",
-        description: "Nom d'utilisateur ou mot de passe incorrect",
+        description: "Identifiants incorrects ou compte inexistant",
         variant: "destructive",
       });
       throw error;
@@ -79,7 +78,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (username: string, password: string, fullName: string, subject?: string) => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/register", { username, password, fullName, subject });
+      const response = await axios.post("/api/register", { 
+        username, 
+        password, 
+        fullName,
+        subject 
+      });
       setUser(response.data);
       toast({
         title: "Inscription réussie",
@@ -88,7 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       toast({
         title: "Erreur d'inscription",
-        description: "Impossible de créer le compte. Veuillez réessayer.",
+        description: "Impossible de créer le compte. Vérifiez que le nom d'utilisateur n'est pas déjà utilisé.",
         variant: "destructive",
       });
       throw error;
@@ -130,5 +134,4 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// Exporter le contexte lui-même
-export { AuthContext };
+export default AuthContext;
