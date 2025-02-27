@@ -89,18 +89,52 @@ export const insertCompetencySchema = createInsertSchema(competencies).pick({
   frameworkId: true,
 });
 
+// Taxonomies (Bloom, CIEL, etc.)
+export const taxonomies = pgTable("taxonomies", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  isDefault: boolean("is_default").default(false),
+  teacherId: integer("teacher_id"), // null si c'est une taxonomie prédéfinie
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertTaxonomySchema = createInsertSchema(taxonomies).pick({
+  name: true,
+  description: true,
+  isDefault: true,
+  teacherId: true,
+});
+
+// Niveaux taxonomiques
+export const taxonomicLevels = pgTable("taxonomic_levels", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  level: integer("level").notNull(), // 1, 2, 3, etc. pour l'ordre
+  taxonomyId: integer("taxonomy_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertTaxonomicLevelSchema = createInsertSchema(taxonomicLevels).pick({
+  name: true,
+  description: true,
+  level: true,
+  taxonomyId: true,
+});
+
 // Knowledge associated with competencies
 export const knowledge = pgTable("knowledge", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  taxonomicLevel: integer("taxonomic_level"), // Niveau taxonomique (1, 2, 3)
+  taxonomicLevelId: integer("taxonomic_level_id"), // Lien vers le niveau taxonomique
   competencyId: integer("competency_id").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const insertKnowledgeSchema = createInsertSchema(knowledge).pick({
   name: true,
-  taxonomicLevel: true,
+  taxonomicLevelId: true,
   competencyId: true,
 });
 
@@ -243,3 +277,9 @@ export type InsertKnowledge = z.infer<typeof insertKnowledgeSchema>;
 
 export type EvaluationCriteria = typeof evaluationCriteria.$inferSelect;
 export type InsertEvaluationCriteria = z.infer<typeof insertEvaluationCriteriaSchema>;
+
+export type Taxonomy = typeof taxonomies.$inferSelect;
+export type InsertTaxonomy = z.infer<typeof insertTaxonomySchema>;
+
+export type TaxonomicLevel = typeof taxonomicLevels.$inferSelect;
+export type InsertTaxonomicLevel = z.infer<typeof insertTaxonomicLevelSchema>;

@@ -64,6 +64,20 @@ export interface IStorage {
   updateEvaluationCriteria(id: number, criteria: Partial<InsertEvaluationCriteria>): Promise<EvaluationCriteria | undefined>;
   deleteEvaluationCriteria(id: number): Promise<boolean>;
   
+  // Taxonomy methods
+  getTaxonomies(teacherId?: number): Promise<Taxonomy[]>;
+  getTaxonomy(id: number): Promise<Taxonomy | undefined>;
+  createTaxonomy(taxonomy: InsertTaxonomy): Promise<Taxonomy>;
+  updateTaxonomy(id: number, taxonomy: Partial<InsertTaxonomy>): Promise<Taxonomy | undefined>;
+  deleteTaxonomy(id: number): Promise<boolean>;
+  
+  // Taxonomic Level methods
+  getTaxonomicLevels(taxonomyId: number): Promise<TaxonomicLevel[]>;
+  getTaxonomicLevel(id: number): Promise<TaxonomicLevel | undefined>;
+  createTaxonomicLevel(level: InsertTaxonomicLevel): Promise<TaxonomicLevel>;
+  updateTaxonomicLevel(id: number, level: Partial<InsertTaxonomicLevel>): Promise<TaxonomicLevel | undefined>;
+  deleteTaxonomicLevel(id: number): Promise<boolean>;
+  
   // Competency Assessment methods
   getCompetencyAssessments(params: { classId?: number, studentId?: number, competencyId?: number, teacherId?: number }): Promise<CompetencyAssessment[]>;
   getCompetencyAssessment(id: number): Promise<CompetencyAssessment | undefined>;
@@ -108,6 +122,8 @@ export class MemStorage implements IStorage {
   private sequences: Map<number, Sequence>;
   private resources: Map<number, Resource>;
   private events: Map<number, Event>;
+  private taxonomies: Map<number, Taxonomy>;
+  private taxonomicLevels: Map<number, TaxonomicLevel>;
   
   sessionStore: session.SessionStore;
   
@@ -122,6 +138,8 @@ export class MemStorage implements IStorage {
   private sequenceIdCounter: number = 1;
   private resourceIdCounter: number = 1;
   private eventIdCounter: number = 1;
+  private taxonomyIdCounter: number = 1;
+  private taxonomicLevelIdCounter: number = 1;
 
   constructor() {
     this.users = new Map();
