@@ -16,7 +16,7 @@ export const createBacProCielReferentiel = (teacherId: number | string): {
   const framework: CompetencyFramework = {
     id: frameworkId,
     name: "BAC PRO CIEL - Cybersécurité, Informatique et réseaux, Électronique",
-    description: "Référentiel de compétences du BAC PRO CIEL - Ce référentiel définit les compétences, savoirs et critères d'évaluation pour la formation au BAC PRO CIEL.",
+    description: "Référentiel officiel des compétences, savoirs et critères d'évaluation pour le BAC PRO CIEL.",
     teacherId: teacherIdNum,
     createdAt: new Date(),
   };
@@ -37,7 +37,7 @@ export const createBacProCielReferentiel = (teacherId: number | string): {
   const addCompetency = (
     code: string,
     name: string,
-    description: string,
+    correspondence: string,
     associatedKnowledge: { name: string; taxonomicLevelId: number }[] = [],
     technicalCriteria: string[] = [],
     behaviorCriteria: string[] = []
@@ -49,7 +49,7 @@ export const createBacProCielReferentiel = (teacherId: number | string): {
       id: competencyId,
       code,
       name,
-      description,
+      description: correspondence,
       frameworkId,
       createdAt: new Date(),
     });
@@ -88,212 +88,235 @@ export const createBacProCielReferentiel = (teacherId: number | string): {
     });
   };
   
-  // BLOC 1: COMMUNIQUER
+  // Ajout des compétences selon le référentiel BAC PRO CIEL officiel
+  
+  // C01 - COMMUNIQUER EN SITUATION PROFESSIONNELLE (FRANÇAIS/ANGLAIS)
   addCompetency(
     "C01",
-    "COMMUNIQUER avec le client, l'exploitant ou l'équipe",
-    "Dialoguer, collecter et transmettre des informations, adapter sa communication à son interlocuteur",
+    "COMMUNIQUER EN SITUATION PROFESSIONNELLE (FRANÇAIS/ANGLAIS)",
+    "CC8/CC9 - Renseigner les documents/Communiquer avec le client",
     [
-      { name: "Communication professionnelle écrite et orale", taxonomicLevelId: 3 },
-      { name: "Vocabulaire technique dans le domaine professionnel", taxonomicLevelId: 2 },
-      { name: "Techniques d'écoute active et de questionnement", taxonomicLevelId: 3 },
+      { name: "Communication interpersonnelle", taxonomicLevelId: 2 },
+      { name: "Théorie de la communication : définition, composantes, enjeux, registre de langage, discours expert", taxonomicLevelId: 2 },
+      { name: "Communication écrite : cahiers des charges, dossiers de présentation", taxonomicLevelId: 3 },
+      { name: "Communication orale : verbale et non verbale, écoute active, empathie, techniques de reformulation", taxonomicLevelId: 3 },
+      { name: "Règles de présentation et de typographie", taxonomicLevelId: 3 },
     ],
     [
-      "Les informations nécessaires sont collectées",
-      "Le vocabulaire technique est adapté à l'interlocuteur",
-      "Les documents professionnels sont rédigés correctement",
-      "Les informations sont transmises de manière claire et précise",
+      "La présentation (typographie, orthographe, illustration, lisibilité) est soignée et soutient le discours avec des enchaînements cohérents",
+      "La présentation orale (support et expression) est de qualité et claire",
+      "L'argumentation développée lors de la présentation et de l'échange est de qualité",
+      "L'argumentation tient compte des éventuelles situations de handicap des personnes avec lesquelles il interagit",
     ],
     [
-      "L'expression est claire, précise et adaptée à l'interlocuteur",
-      "L'attitude est courtoise et respectueuse",
-      "L'écoute est attentive",
+      "Le style, le ton et la terminologie utilisés sont adaptés à la personne et aux circonstances",
+      "L'attitude, les comportements et le langage adoptés sont conformes aux règles de la profession, la réaction est adaptée au contexte",
     ]
   );
   
-  addCompetency(
-    "C02",
-    "ORGANISER son intervention en respectant la sécurité",
-    "Planifier et organiser son intervention en respectant les règles de sécurité",
-    [
-      { name: "Planification d'intervention", taxonomicLevelId: 3 },
-      { name: "Règles de sécurité dans le domaine professionnel", taxonomicLevelId: 3 },
-      { name: "Normes et réglementations", taxonomicLevelId: 2 },
-    ],
-    [
-      "L'intervention est planifiée de manière cohérente",
-      "Les outils nécessaires sont identifiés et préparés",
-      "Les risques sont identifiés et pris en compte",
-      "Les équipements de protection sont utilisés correctement",
-    ],
-    [
-      "L'organisation est méthodique",
-      "Les règles de sécurité sont respectées avec rigueur",
-      "L'autocontrôle est systématique",
-    ]
-  );
-  
-  // BLOC 2: PRÉPARER
+  // C03 - PARTICIPER A UN PROJET
   addCompetency(
     "C03",
-    "PRÉVOIR les ressources nécessaires à l'intervention",
-    "Identifier et rassembler les ressources matérielles et documentaires nécessaires",
+    "PARTICIPER A UN PROJET",
+    "CC2/CC1 - Organiser la réalisation ou l'intervention/S'informer sur l'intervention ou sur la réalisation",
     [
-      { name: "Gestion des ressources matérielles", taxonomicLevelId: 3 },
-      { name: "Documentation technique des équipements", taxonomicLevelId: 2 },
-      { name: "Techniques d'estimation et de planification", taxonomicLevelId: 3 },
+      { name: "Outils de suivi", taxonomicLevelId: 2 },
+      { name: "Budgétisation des ressources humaines et matérielles", taxonomicLevelId: 2 },
     ],
     [
-      "Les ressources matérielles nécessaires sont correctement identifiées",
-      "La documentation technique est sélectionnée de manière pertinente",
-      "L'estimation des ressources est réaliste",
+      "Le suivi du projet est conforme aux attentes",
+      "L'espace collaboratif est utilisé de manière appropriée",
     ],
     [
-      "La méthode d'organisation est efficace",
-      "L'anticipation des besoins est appropriée",
+      "Les tâches sont exécutées avec une attention soutenue et minutieuse afin de garantir le résultat escompté",
     ]
   );
   
+  // C04 - ANALYSER UNE STRUCTURE MATÉRIELLE ET LOGICIELLE
   addCompetency(
     "C04",
-    "PRÉPARER l'intégration d'un système cybersécurisé",
-    "Configurer et préparer les équipements et logiciels pour une intégration sécurisée",
+    "ANALYSER UNE STRUCTURE MATÉRIELLE ET LOGICIELLE",
+    "CC3 - Analyser et exploiter les données",
     [
-      { name: "Bases de la cybersécurité", taxonomicLevelId: 3 },
-      { name: "Configuration des équipements réseau", taxonomicLevelId: 3 },
-      { name: "Protocoles de sécurité informatique", taxonomicLevelId: 2 },
+      { name: "Infrastructures matérielles et logicielles centralisées, décentralisées ou réparties", taxonomicLevelId: 3 },
+      { name: "Documents d'architecture métiers (synoptique, schéma de câblage, etc.)", taxonomicLevelId: 3 },
+      { name: "Structures électroniques matérielles (analogiques et numériques)", taxonomicLevelId: 2 },
+      { name: "Expertise en électronique analogique", taxonomicLevelId: 3 },
+      { name: "Anglais technique", taxonomicLevelId: 2 },
     ],
     [
-      "Les configurations de sécurité sont correctement implémentées",
-      "Les tests préliminaires sont effectués méthodiquement",
-      "Les vulnérabilités potentielles sont identifiées",
+      "Identification du besoin ainsi que des ressources matérielles, logicielles et humaines",
+      "Extraction des informations nécessaires des documents réglementaires et/ou constructeurs",
+      "Interprétation des indicateurs de fonctionnement",
     ],
     [
-      "La rigueur dans l'application des protocoles est constante",
-      "L'attention aux détails de configuration est manifeste",
+      "Organisation du travail pour répondre aux exigences de qualité, d'efficacité et de délai",
+      "Maintien constant du calme dans des situations particulières, persévérance jusqu'à l'obtention du résultat sans découragement",
+      "Identification des risques en situation de travail et adoption des mesures appropriées pour la santé, la sécurité personnelle et celle des autres",
     ]
   );
   
-  // BLOC 3: RÉALISER
-  addCompetency(
-    "C05",
-    "INSTALLER un système cybersécurisé",
-    "Déployer et mettre en service des systèmes informatiques en appliquant les mesures de sécurité appropriées",
-    [
-      { name: "Installation de systèmes d'exploitation", taxonomicLevelId: 3 },
-      { name: "Mise en place de pare-feu et systèmes de protection", taxonomicLevelId: 3 },
-      { name: "Déploiement d'environnements virtualisés sécurisés", taxonomicLevelId: 2 },
-    ],
-    [
-      "L'installation est réalisée conformément aux spécifications",
-      "Les configurations de sécurité sont correctement implémentées",
-      "La documentation de l'installation est complète et précise",
-    ],
-    [
-      "La méthodologie d'installation est suivie rigoureusement",
-      "Les bonnes pratiques de sécurité sont systématiquement appliquées",
-    ]
-  );
-  
+  // C06 - VALIDER LA CONFORMITÉ D'UNE INSTALLATION
   addCompetency(
     "C06",
-    "EXPLOITER un système cybersécurisé",
-    "Utiliser, surveiller et maintenir un système informatique en conditions opérationnelles de sécurité",
+    "VALIDER LA CONFORMITÉ D'UNE INSTALLATION",
+    "CC6 - Mettre en service",
     [
-      { name: "Supervision et monitoring de systèmes", taxonomicLevelId: 3 },
-      { name: "Gestion des incidents de sécurité", taxonomicLevelId: 3 },
-      { name: "Mécanismes de détection d'intrusion", taxonomicLevelId: 2 },
+      { name: "Réseaux informatiques (protocoles, équipements et outils usuels)", taxonomicLevelId: 3 },
+      { name: "Principes des modèles en couches", taxonomicLevelId: 1 },
+      { name: "Architecture réseaux industriels et tertiaires", taxonomicLevelId: 2 },
+      { name: "Structures matérielles (analogiques et numériques)", taxonomicLevelId: 2 },
+      { name: "Structures programmables", taxonomicLevelId: 2 },
+      { name: "Appareils de mesure", taxonomicLevelId: 3 },
     ],
     [
-      "La surveillance du système est effectuée régulièrement",
-      "Les incidents sont détectés et traités selon les procédures",
-      "Les performances du système sont maintenues à un niveau optimal",
+      "Les exigences du cahier des charges sont respectées",
+      "Les tests sont effectués",
+      "Les résultats attendus sont vérifiés",
+      "La procédure de test est suivie",
     ],
     [
-      "La vigilance dans la détection d'anomalies est constante",
-      "La réactivité face aux incidents est appropriée",
+      "Le travail est effectué de manière honnête, sans tromper, abuser, léser ou blesser autrui",
+      "Des actions appropriées sont décidées face à un ensemble de faits",
     ]
   );
   
+  // C07 - RÉALISER DES MAQUETTES ET PROTOTYPES
   addCompetency(
     "C07",
-    "DIAGNOSTIQUER un dysfonctionnement dans un système cybersécurisé",
-    "Identifier l'origine d'un dysfonctionnement et évaluer son impact sur la sécurité du système",
+    "RÉALISER DES MAQUETTES ET PROTOTYPES",
+    "CC4 - Réaliser une installation ou une intervention",
     [
-      { name: "Méthodes de diagnostic systématique", taxonomicLevelId: 3 },
-      { name: "Analyse des journaux système et de sécurité", taxonomicLevelId: 3 },
-      { name: "Outils de diagnostic réseau et système", taxonomicLevelId: 2 },
+      { name: "Technologies de boîtiers de composants (CMS, traversant, connectiques)", taxonomicLevelId: 3 },
+      { name: "Technologies de fabrication d'un PCB (procédés industriels)", taxonomicLevelId: 2 },
+      { name: "Procédés industriels de pose et brasure", taxonomicLevelId: 2 },
+      { name: "Procédés de prototypage", taxonomicLevelId: 3 },
+      { name: "Normes IPC", taxonomicLevelId: 2 },
+      { name: "Normes QSE", taxonomicLevelId: 2 },
+      { name: "Notions et concepts du développement durable appliqués aux produits électroniques et services numériques", taxonomicLevelId: 2 },
     ],
     [
-      "La démarche de diagnostic est méthodique et logique",
-      "Les tests réalisés sont pertinents",
-      "L'origine du dysfonctionnement est correctement identifiée",
-      "L'impact sur la sécurité est correctement évalué",
+      "Le placement et routage respectent le cahier des charges",
+      "La génération des fichiers de fabrication du PCB est conforme aux attentes",
+      "Le PCB est réalisé, contrôlé et respecte les normes IPC (tolérances mécaniques, finition de surface, propreté, ESD, etc.)",
+      "Les composants sont conformes à la nomenclature (marquage, étiquetage)",
+      "La nomenclature des composants est respectée",
+      "Le brasage de la carte est conforme à la nomenclature et aux normes IPC",
+      "Les contraintes environnementales sont intégrées",
+      "Le contrôle visuel de la carte assemblée correspond au dossier de fabrication",
+      "Les risques liés à la situation de travail sont identifiés et les mesures appropriées pour la santé et la sécurité sont prises",
     ],
     [
-      "L'analyse est rigoureuse et systématique",
-      "La persévérance dans la recherche de solutions est démontrée",
+      "Le travail est effectué selon les attentes en termes de temps, quantité ou qualité tout en respectant les contraintes environnementales",
+      "L'effort nécessaire est fourni pour terminer et réussir le travail demandé",
+      "Le travail est préparé pour satisfaire les exigences de qualité, d'efficacité et de respect des délais",
     ]
   );
   
+  // C08 - CODER
   addCompetency(
     "C08",
-    "DÉPANNER un système cybersécurisé",
-    "Corriger les dysfonctionnements en rétablissant la sécurité du système",
+    "CODER",
+    "CC4 - Réaliser une installation ou une intervention",
     [
-      { name: "Techniques de correction de vulnérabilités", taxonomicLevelId: 3 },
-      { name: "Procédures de restauration système", taxonomicLevelId: 3 },
-      { name: "Mise à jour et application de correctifs de sécurité", taxonomicLevelId: 2 },
+      { name: "Langages de développement, description, interfaces IDE", taxonomicLevelId: 2 },
+      { name: "Outils de modélisation", taxonomicLevelId: 2 },
+      { name: "Politiques liées à la sécurisation des applications", taxonomicLevelId: 2 },
+      { name: "Infrastructures matérielles et logicielles", taxonomicLevelId: 2 },
+      { name: "Principes fondamentaux de programmation", taxonomicLevelId: 3 },
     ],
     [
-      "La solution mise en œuvre corrige effectivement le dysfonctionnement",
-      "La sécurité du système est rétablie après intervention",
-      "La documentation de l'intervention est complète et utilisable",
+      "Les environnements de développement et de test respectent les contraintes de fonctionnalités et de sécurité",
+      "Le module logiciel est débogué et sans erreur syntaxique",
+      "Les composants logiciels sont développés et testés selon les spécifications",
+      "La solution intégrée est testée conformément aux spécifications",
+      "Le code est commenté et le logiciel documenté",
     ],
     [
-      "L'efficacité dans la mise en œuvre des solutions est démontrée",
-      "La vérification post-intervention est systématique",
+      "Le travail est effectué selon les attentes de temps, quantité ou qualité",
+      "Le travail en équipe est solidaire, avec contribution d'idées et d'efforts",
     ]
   );
   
-  // BLOC 4: CYBERSÉCURITÉ
+  // C09 - INSTALLER LES ÉLÉMENTS D'UN SYSTÈME ÉLECTRONIQUE OU INFORMATIQUE
   addCompetency(
     "C09",
-    "SÉCURISER un système d'information",
-    "Mettre en œuvre les mesures de sécurité adaptées pour protéger un système d'information",
+    "INSTALLER LES ÉLÉMENTS D'UN SYSTÈME ÉLECTRONIQUE OU INFORMATIQUE",
+    "CC4 - Réaliser une installation ou une intervention",
     [
-      { name: "Politiques de sécurité des systèmes d'information", taxonomicLevelId: 3 },
-      { name: "Chiffrement et protection des données", taxonomicLevelId: 3 },
-      { name: "Gestion des identités et des accès", taxonomicLevelId: 3 },
+      { name: "Conception mécanique et architecturale en 2D et 3D", taxonomicLevelId: 3 },
+      { name: "Schémas électriques, électroniques et de réseaux", taxonomicLevelId: 3 },
+      { name: "Utilisation d'appareils de mesure (multimètre, oscilloscope, etc.)", taxonomicLevelId: 3 },
+      { name: "Habilitation électrique niveau B1V", taxonomicLevelId: 3 },
+      { name: "Utilisation d'outillage mécanique et spécifique", taxonomicLevelId: 3 },
+      { name: "Certification AIPR (Autorisation d'Intervenir à Proximité des Réseaux)", taxonomicLevelId: 3 },
+      { name: "Connaissances en éléments actifs", taxonomicLevelId: 3 },
     ],
     [
-      "Les mesures de sécurité implémentées sont adaptées aux besoins",
-      "La politique de contrôle d'accès est correctement définie et appliquée",
-      "Les données sensibles sont correctement protégées",
+      "Vérification complète des éléments nécessaires à l'installation du système conformément au cahier des charges",
+      "Installation et raccordement des éléments du système suivant une procédure définie",
+      "Réalisation de la configuration",
+      "Mise en service effectuée",
+      "État de l'installation documenté de manière écrite ou orale",
+      "Identifications des risques et adoption des mesures appropriées pour assurer la santé et la sécurité de tous",
     ],
     [
-      "La rigueur dans l'application des politiques de sécurité est constante",
-      "L'anticipation des risques potentiels est démontrée",
+      "Préparation du travail afin de répondre aux exigences de qualité, d'efficacité et de conformité au calendrier",
+      "Exécution du travail selon les attentes en termes de temps, quantité ou qualité",
+      "Résolution réussie de problèmes nouveaux et imprévus en utilisant ses propres ressources conformément aux règles de la fonction",
+      "Accomplissement de tâches variées dans différents domaines et contextes",
     ]
   );
   
+  // C10 - EXPLOITER UN RÉSEAU INFORMATIQUE
   addCompetency(
     "C10",
-    "ASSURER la cybersécurité d'un système",
-    "Maintenir et faire évoluer le niveau de cybersécurité d'un système d'information",
+    "EXPLOITER UN RÉSEAU INFORMATIQUE",
+    "CC5 - Effectuer les opérations préalables",
     [
-      { name: "Veille technologique en cybersécurité", taxonomicLevelId: 2 },
-      { name: "Tests d'intrusion et évaluation de vulnérabilités", taxonomicLevelId: 3 },
-      { name: "Plans de réponse aux incidents de sécurité", taxonomicLevelId: 3 },
+      { name: "Commandes d'équipements", taxonomicLevelId: 3 },
+      { name: "Connexion à distance", taxonomicLevelId: 3 },
+      { name: "Systèmes UNIX et Windows", taxonomicLevelId: 2 },
+      { name: "Sécurité informatique", taxonomicLevelId: 2 },
     ],
     [
-      "La veille sur les nouvelles menaces est régulière et documentée",
-      "Les mises à jour de sécurité sont appliquées de manière appropriée",
-      "Les tests de sécurité sont réalisés périodiquement",
+      "Alertes et problèmes signalés",
+      "Éléments de réseau ou système identifiés sur un schéma",
+      "Mise à jour des équipements effectuée (iOS, OS, logiciels, firmware)",
+      "Optimisations nécessaires réalisées",
     ],
     [
-      "La proactivité dans l'amélioration continue de la sécurité est démontrée",
-      "L'adaptation aux évolutions des menaces est constante",
+      "Travail en équipe solidaire avec contribution d'idées et d'efforts",
+      "Travail préparé pour satisfaire qualité, efficacité et échéancier",
+    ]
+  );
+  
+  // C11 - MAINTENIR UN SYSTÈME ÉLECTRONIQUE OU RÉSEAU INFORMATIQUE
+  addCompetency(
+    "C11",
+    "MAINTENIR UN SYSTÈME ÉLECTRONIQUE OU RÉSEAU INFORMATIQUE",
+    "CC7 - Réaliser une opération de maintenance",
+    [
+      { name: "Structures électroniques analogiques et numériques", taxonomicLevelId: 3 },
+      { name: "Structures programmables", taxonomicLevelId: 2 },
+      { name: "Caractérisation de signaux non complexes", taxonomicLevelId: 2 },
+      { name: "Appareils de mesure (multimètre, oscilloscope, générateurs, etc.)", taxonomicLevelId: 3 },
+      { name: "Formation à l'habilitation électrique BR", taxonomicLevelId: 2 },
+      { name: "Économie de la maintenance (coûts de la maintenance)", taxonomicLevelId: 2 },
+      { name: "Normes QSE", taxonomicLevelId: 1 },
+      { name: "Différents types de maintenance", taxonomicLevelId: 2 },
+      { name: "Normes IPC spécifiques à la réparation", taxonomicLevelId: 2 },
+    ],
+    [
+      "L'intervention est préparée",
+      "Le dysfonctionnement est constaté",
+      "La maintenance ou la réparation est réalisée",
+      "La fiche d'intervention est correctement renseignée",
+      "Les risques d'une situation de travail sont identifiés et des mesures appropriées pour la santé et la sécurité de chacun sont adoptées",
+    ],
+    [
+      "Un suivi attentif et constant du déroulement des tâches de travail est observé pour garantir le résultat attendu",
+      "Des idées novatrices, des pratiques et des ressources inhabituelles sont introduites pour favoriser l'avancement de son propre travail ou de celui des autres",
     ]
   );
   
