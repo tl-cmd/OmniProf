@@ -1,133 +1,27 @@
-import { createContext, ReactNode, useContext } from "react";
-import {
-  useQuery,
-  useMutation,
-  UseMutationResult,
-} from "@tanstack/react-query";
-import { insertUserSchema, User as SelectUser, InsertUser } from "@shared/schema";
-import { getQueryFn, apiRequest, queryClient } from "../lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
-import { z } from "zod";
 
-type AuthContextType = {
-  user: SelectUser | null;
-  isLoading: boolean;
-  error: Error | null;
-  loginMutation: UseMutationResult<SelectUser, Error, LoginData>;
-  logoutMutation: UseMutationResult<void, Error, void>;
-  registerMutation: UseMutationResult<SelectUser, Error, RegisterData>;
-};
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import axios from "axios";
 
-type LoginData = {
+type User = {
+  id: number;
   username: string;
-  password: string;
+  fullName: string;
+  subject?: string;
 };
 
-// Extend the insert schema to add password confirmation
-const registerSchema = insertUserSchema
-  .extend({
-    confirmPassword: z.string()
-  })
-  .refine(data => data.password === data.confirmPassword, {
-    message: "Les mots de passe ne correspondent pas",
-    path: ["confirmPassword"]
-  });
-
-type RegisterData = z.infer<typeof registerSchema>;
-
-export const AuthContext = createContext<AuthContextType | null>(null);
-
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const { toast } = useToast();
-  const {
-    data: user,
-    error,
-    isLoading,
-  } = useQuery<SelectUser | null>({
-    queryKey: ["/api/user"],
-    queryFn: getQueryFn({ on401: "returnNull" }),
-  });
-
-  const loginMutation = useMutation({
-    mutationFn: async (credentials: LoginData) => {
-      const res = await apiRequest("POST", "/api/login", credentials);
-      return await res.json();
-    },
-    onSuccess: (user: SelectUser) => {
-      queryClient.setQueryData(["/api/user"], user);
-      toast({
-        title: "Connexion réussie",
-        description: `Bienvenue, ${user.fullName}!`,
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Échec de la connexion",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  const registerMutation = useMutation({
-    mutationFn: async (data: RegisterData) => {
-      // Remove confirmPassword before sending to the server
-      const { confirmPassword, ...userData } = data;
-      const res = await apiRequest("POST", "/api/register", userData);
-      return await res.json();
-    },
-    onSuccess: (user: SelectUser) => {
-      queryClient.setQueryData(["/api/user"], user);
-      toast({
-        title: "Inscription réussie",
-        description: `Bienvenue, ${user.fullName}!`,
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Échec de l'inscription",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      await apiRequest("POST", "/api/logout");
-    },
-    onSuccess: () => {
-      queryClient.setQueryData(["/api/user"], null);
-      toast({
-        title: "Déconnexion réussie",
-        description: "À bientôt!",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Échec de la déconnexion",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user: user ?? null,
-        isLoading,
-        error,
-        loginMutation,
-        logoutMutation,
-        registerMutation,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+interface AuthContextType {
+  user: User | null;
+  login: (username: string, password: string) => Promise<void>;
+  register: (username: string, password: string, fullName: string, subject?: string) => Promise<void>;
+  logout: () => Promise<void>;
+  loading: boolean;
 }
 
+// Création du contexte avec une valeur par défaut
+const AuthContext = createContext<AuthContextType | null>(null);
+
+// Hook personnalisé pour utiliser le contexte
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
@@ -136,5 +30,105 @@ export function useAuth() {
   return context;
 }
 
-// Export the validation schema for forms
-export { registerSchema };
+// Composant Provider qui fournit le contexte
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  // Vérifier l'état d'authentification au chargement
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axios.get("/api/user");
+        setUser(response.data);
+      } catch (error) {
+        // Utilisateur non authentifié, c'est normal
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  // Fonction de connexion
+  const login = async (username: string, password: string) => {
+    try {
+      setLoading(true);
+      const response = await axios.post("/api/login", { username, password });
+      setUser(response.data);
+      toast({
+        title: "Connexion réussie",
+        description: `Bienvenue, ${response.data.fullName}!`,
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur de connexion",
+        description: "Nom d'utilisateur ou mot de passe incorrect",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fonction d'inscription
+  const register = async (username: string, password: string, fullName: string, subject?: string) => {
+    try {
+      setLoading(true);
+      const response = await axios.post("/api/register", { username, password, fullName, subject });
+      setUser(response.data);
+      toast({
+        title: "Inscription réussie",
+        description: `Bienvenue, ${response.data.fullName}!`,
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur d'inscription",
+        description: "Impossible de créer le compte. Veuillez réessayer.",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fonction de déconnexion
+  const logout = async () => {
+    try {
+      setLoading(true);
+      await axios.post("/api/logout");
+      setUser(null);
+      toast({
+        title: "Déconnexion réussie",
+        description: "À bientôt!",
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur de déconnexion",
+        description: "Une erreur est survenue lors de la déconnexion",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const value = {
+    user,
+    login,
+    register,
+    logout,
+    loading,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+// Exporter le contexte lui-même
+export { AuthContext };
