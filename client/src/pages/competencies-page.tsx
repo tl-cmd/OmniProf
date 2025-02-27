@@ -1,7 +1,7 @@
 import { AppLayout } from "@/components/layout/app-layout";
 import { Button } from "@/components/ui/button";
 import { CompetencyFramework, Competency } from "@shared/schema";
-import { Plus, Search, FileText, Check } from "lucide-react";
+import { Plus, Search, FileText, Check, BookOpen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
@@ -17,6 +17,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { createBacProCielReferentiel, storeReferentielData } from "@/lib/createBacProCielData";
 
 interface CompetenciesPageProps {
   teacherInfo: Teacher;
@@ -111,9 +112,9 @@ export default function CompetenciesPage({ teacherInfo }: CompetenciesPageProps)
           // Si nous avons un référentiel par défaut, ajoutons quelques compétences d'exemple
           if (frameworks.length > 0 && teacherInfo.subject === "Mathématiques") {
             const defaultCompetencies: Competency[] = [
-              { id: Date.now(), name: "Résoudre des problèmes", description: "Résoudre des problèmes impliquant des grandeurs variées", frameworkId: frameworks[0].id, createdAt: new Date() },
-              { id: Date.now() + 1, name: "Utiliser les nombres relatifs", description: "Additionner, soustraire, multiplier et diviser des nombres relatifs", frameworkId: frameworks[0].id, createdAt: new Date() },
-              { id: Date.now() + 2, name: "Calculer avec des fractions", description: "Effectuer des calculs avec des nombres en écriture fractionnaire", frameworkId: frameworks[0].id, createdAt: new Date() },
+              { id: Date.now(), name: "Résoudre des problèmes", description: "Résoudre des problèmes impliquant des grandeurs variées", frameworkId: frameworks[0].id, createdAt: new Date(), code: "M01" },
+              { id: Date.now() + 1, name: "Utiliser les nombres relatifs", description: "Additionner, soustraire, multiplier et diviser des nombres relatifs", frameworkId: frameworks[0].id, createdAt: new Date(), code: "M02" },
+              { id: Date.now() + 2, name: "Calculer avec des fractions", description: "Effectuer des calculs avec des nombres en écriture fractionnaire", frameworkId: frameworks[0].id, createdAt: new Date(), code: "M03" },
             ];
             
             localStorage.setItem('competencies', JSON.stringify(defaultCompetencies));
@@ -234,6 +235,59 @@ export default function CompetenciesPage({ teacherInfo }: CompetenciesPageProps)
             </div>
           ) : (
             <>
+              {!searchQuery && (
+                <Card className="mb-6 bg-blue-50 border-blue-200">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-lg font-medium">BAC PRO CIEL - Référentiel officiel</CardTitle>
+                    <BookOpen className="h-4 w-4 text-blue-500" />
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      Créez un référentiel complet basé sur les compétences officielles du BAC PRO CIEL 
+                      (Cybersécurité, Informatique et réseaux, Électronique).
+                    </p>
+                    <div className="mt-4">
+                      <Button 
+                        className="w-full"
+                        onClick={() => {
+                          try {
+                            const { framework, competencies, knowledgeItems, evaluationCriteria } = 
+                              createBacProCielReferentiel(teacherInfo.fullName);
+                            
+                            const success = storeReferentielData(
+                              framework, 
+                              competencies, 
+                              knowledgeItems, 
+                              evaluationCriteria
+                            );
+                            
+                            if (success) {
+                              // Ajouter le référentiel à la liste locale
+                              setFrameworks([...frameworks, framework]);
+                              
+                              toast({
+                                title: "Référentiel BAC PRO CIEL créé",
+                                description: "Le référentiel avec 10 compétences, savoirs associés et critères d'évaluation a été créé avec succès.",
+                              });
+                            }
+                          } catch (error) {
+                            console.error("Erreur lors de la création du référentiel:", error);
+                            toast({
+                              title: "Erreur",
+                              description: "Une erreur est survenue lors de la création du référentiel.",
+                              variant: "destructive",
+                            });
+                          }
+                        }}
+                      >
+                        <BookOpen className="h-4 w-4 mr-2" />
+                        Créer le référentiel BAC PRO CIEL
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+              
               {filteredFrameworks && filteredFrameworks.length > 0 ? (
                 <div className="grid gap-6 md:grid-cols-2">
                   {filteredFrameworks.map(framework => (
