@@ -128,6 +128,7 @@ export const taxonomicLevels = pgTable("taxonomic_levels", {
   description: text("description"),
   level: integer("level").notNull(), // 1, 2, 3, etc. pour l'ordre
   taxonomyId: integer("taxonomy_id").notNull(),
+  code: text("code"), // Ajout du code pour les compétences CIEL (C01, C02, etc.)
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -137,9 +138,11 @@ export const insertTaxonomicLevelSchema = createInsertSchema(taxonomicLevels)
     description: true,
     level: true,
     taxonomyId: true,
+    code: true,
   })
   .extend({
     description: z.string().optional().nullable(),
+    code: z.string().optional().nullable(),
   });
 
 // Knowledge associated with competencies

@@ -307,7 +307,12 @@ export default function CompetenciesPage({ teacherInfo }: CompetenciesPageProps)
                       <AccordionItem value={`item-${competency.id}`} className="border-none">
                         <AccordionTrigger className="px-4 py-2 hover:no-underline">
                           <div className="flex justify-between items-center w-full pr-4">
-                            <span>{competency.name}</span>
+                            <span>
+                              {competency.code && (
+                                <span className="font-mono text-primary mr-2">{competency.code} -</span>
+                              )}
+                              {competency.name}
+                            </span>
                             <div className="flex items-center">
                               <div className="w-24 h-2 bg-gray-200 rounded-full mr-2">
                                 <div 

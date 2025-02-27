@@ -654,12 +654,13 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
                   <div className="flex justify-between items-start">
                     <div>
                       <div className="flex items-center gap-2">
-                        {competency.code && (
-                          <span className="text-sm font-mono px-2 py-1 bg-primary/10 text-primary rounded">
-                            {competency.code}
-                          </span>
+                        {competency.code ? (
+                          <CardTitle>
+                            <span className="font-mono text-primary">{competency.code}</span> - {competency.name}
+                          </CardTitle>
+                        ) : (
+                          <CardTitle>{competency.name}</CardTitle>
                         )}
-                        <CardTitle>{competency.name}</CardTitle>
                       </div>
                       <CardDescription className="mt-2">
                         {competency.description}

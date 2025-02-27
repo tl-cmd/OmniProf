@@ -233,7 +233,7 @@ export const taxonomyUtils = {
    */
   async createCustomTaxonomy(
     taxonomyData: InsertTaxonomy,
-    levels: Array<{ name: string; description: string; level: number }>
+    levels: Array<{ name: string; description: string; level: number; code?: string }>
   ): Promise<Taxonomy> {
     const taxonomy = await storage.createTaxonomy({
       ...taxonomyData,
