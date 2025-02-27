@@ -1,123 +1,85 @@
-
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
+// Define types for our context
 type User = {
-  id: number;
-  username: string;
-  fullName: string;
-  subject?: string;
+  id: string;
+  name: string;
+  email: string;
+  role: string;
 };
 
 type AuthContextType = {
   user: User | null;
   loading: boolean;
-  login: (username: string, password: string) => Promise<void>;
-  register: (username: string, password: string, fullName: string, subject?: string) => Promise<void>;
+  error: string | null;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  isAuthenticated: boolean;
 };
 
-const AuthContext = createContext<AuthContextType | null>(null);
+// Create the context with a default value
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Hook personnalisé pour utiliser le contexte
-export function useAuth() {
+// Custom hook to use the auth context
+export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth doit être utilisé à l'intérieur d'un AuthProvider");
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-}
+};
 
-// Composant Provider qui fournit le contexte
-export function AuthProvider({ children }: { children: ReactNode }) {
+// Provider component that wraps your app and makes auth available
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
+  const [error, setError] = useState<string | null>(null);
 
-  // Vérifier l'état d'authentification au chargement
+  // Check if the user is already logged in
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuthStatus = async () => {
       try {
-        const response = await axios.get("/api/user");
-        setUser(response.data);
-      } catch (error) {
-        // Utilisateur non authentifié, c'est normal
-        setUser(null);
+        setLoading(true);
+        const response = await axios.get("/api/auth/me");
+        if (response.data) {
+          setUser(response.data);
+        }
+      } catch (err) {
+        // User is not authenticated, that's fine
+        console.log("User not authenticated");
       } finally {
         setLoading(false);
       }
     };
 
-    checkAuth();
+    checkAuthStatus();
   }, []);
 
-  // Fonction de connexion
-  const login = async (username: string, password: string) => {
+  // Login function
+  const login = async (email: string, password: string) => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/login", { username, password });
+      setError(null);
+      const response = await axios.post("/api/auth/login", { email, password });
       setUser(response.data);
-      toast({
-        title: "Connexion réussie",
-        description: `Bienvenue, ${response.data.fullName}!`,
-      });
-    } catch (error) {
-      toast({
-        title: "Erreur de connexion",
-        description: "Identifiants incorrects ou compte inexistant",
-        variant: "destructive",
-      });
-      throw error;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to login");
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  // Fonction d'inscription
-  const register = async (username: string, password: string, fullName: string, subject?: string) => {
-    try {
-      setLoading(true);
-      const response = await axios.post("/api/register", { 
-        username, 
-        password, 
-        fullName,
-        subject 
-      });
-      setUser(response.data);
-      toast({
-        title: "Inscription réussie",
-        description: `Bienvenue, ${response.data.fullName}!`,
-      });
-    } catch (error) {
-      toast({
-        title: "Erreur d'inscription",
-        description: "Impossible de créer le compte. Vérifiez que le nom d'utilisateur n'est pas déjà utilisé.",
-        variant: "destructive",
-      });
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fonction de déconnexion
+  // Logout function
   const logout = async () => {
     try {
       setLoading(true);
-      await axios.post("/api/logout");
+      await axios.post("/api/auth/logout");
       setUser(null);
-      toast({
-        title: "Déconnexion réussie",
-        description: "À bientôt!",
-      });
-    } catch (error) {
-      toast({
-        title: "Erreur de déconnexion",
-        description: "Une erreur est survenue lors de la déconnexion",
-        variant: "destructive",
-      });
-      throw error;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to logout");
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -125,13 +87,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = {
     user,
-    login,
-    register,
-    logout,
     loading,
+    error,
+    login,
+    logout,
+    isAuthenticated: !!user,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
+};
 
-export default AuthContext;
+// Export the context directly (this is the part that was causing refresh issues)
+export { AuthContext };
