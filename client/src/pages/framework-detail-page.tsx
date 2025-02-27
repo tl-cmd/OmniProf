@@ -79,6 +79,7 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
   const [isEditingFramework, setIsEditingFramework] = useState(false);
   const [isAddingCompetency, setIsAddingCompetency] = useState(false);
   const [selectedCompetency, setSelectedCompetency] = useState<Competency | null>(null);
+  const [isEditingCompetency, setIsEditingCompetency] = useState(false);
   const [isAddingKnowledge, setIsAddingKnowledge] = useState(false);
   const [isAddingCriteria, setIsAddingCriteria] = useState(false);
   const [activeCompetencyTab, setActiveCompetencyTab] = useState<string>("details");
@@ -246,8 +247,33 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
     defaultValues: {
       name: "",
       description: "",
+      code: "",
     },
   });
+  
+  // Formulaire d'édition de compétence
+  const editCompetencyForm = useForm<CompetencyFormValues>({
+    resolver: zodResolver(competencySchema),
+    defaultValues: {
+      name: selectedCompetency?.name || "",
+      description: selectedCompetency?.description || "",
+      code: selectedCompetency?.code || "",
+    },
+    values: {
+      name: selectedCompetency?.name || "",
+      description: selectedCompetency?.description || "",
+      code: selectedCompetency?.code || "",
+    }
+  });
+  
+  // Mettre à jour les valeurs du formulaire d'édition quand la compétence sélectionnée change
+  useEffect(() => {
+    if (selectedCompetency) {
+      editCompetencyForm.setValue("name", selectedCompetency.name);
+      editCompetencyForm.setValue("description", selectedCompetency.description || "");
+      editCompetencyForm.setValue("code", selectedCompetency.code || "");
+    }
+  }, [selectedCompetency, editCompetencyForm]);
 
   // Ajouter une compétence
   const handleAddCompetency = async (values: CompetencyFormValues) => {
@@ -331,6 +357,67 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
     }
   }, [selectedCompetency, addKnowledgeForm, addCriteriaForm]);
   
+  // Mettre à jour une compétence
+  const handleUpdateCompetency = async (values: CompetencyFormValues) => {
+    try {
+      if (!selectedCompetency) return;
+      
+      const storedCompetencies = localStorage.getItem('competencies');
+      const existingCompetencies: Competency[] = storedCompetencies 
+        ? JSON.parse(storedCompetencies) 
+        : [];
+      
+      const updatedCompetencies = existingCompetencies.map(comp => {
+        if (comp.id === selectedCompetency.id) {
+          return {
+            ...comp,
+            name: values.name,
+            description: values.description,
+            code: values.code || null,
+          };
+        }
+        return comp;
+      });
+      
+      localStorage.setItem('competencies', JSON.stringify(updatedCompetencies));
+      
+      // Mettre à jour l'état local
+      setCompetencies(competencies.map(comp => {
+        if (comp.id === selectedCompetency.id) {
+          return {
+            ...comp,
+            name: values.name,
+            description: values.description,
+            code: values.code || null,
+          };
+        }
+        return comp;
+      }));
+      
+      // Mettre à jour la compétence sélectionnée
+      setSelectedCompetency({
+        ...selectedCompetency,
+        name: values.name,
+        description: values.description,
+        code: values.code || null,
+      });
+      
+      toast({
+        title: "Compétence mise à jour",
+        description: "Les modifications ont été enregistrées avec succès.",
+      });
+      
+      setIsEditingCompetency(false);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de la compétence:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la mise à jour de la compétence.",
+        variant: "destructive",
+      });
+    }
+  };
+
   // Ajouter un savoir
   const handleAddKnowledge = async (values: KnowledgeFormValues) => {
     try {
@@ -666,14 +753,27 @@ export default function FrameworkDetailPage({ teacherInfo, frameworkId }: Framew
                         {competency.description}
                       </CardDescription>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                      onClick={() => handleDeleteCompetency(competency.id)}
-                    >
-                      <Trash className="h-4 w-4" />
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-blue-500 hover:text-blue-700 hover:bg-blue-50"
+                        onClick={() => {
+                          setSelectedCompetency(competency);
+                          setIsEditingCompetency(true);
+                        }}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                        onClick={() => handleDeleteCompetency(competency.id)}
+                      >
+                        <Trash className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent className="p-0">
