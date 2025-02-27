@@ -1,5 +1,3 @@
-import { AppLayout } from "@/components/layout/app-layout";
-import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Sequence, Class, Competency } from "@shared/schema";
 import { Input } from "@/components/ui/input";
