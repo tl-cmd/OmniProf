@@ -11,7 +11,9 @@ import {
   CompetencyAssessment, InsertCompetencyAssessment,
   Sequence, InsertSequence,
   Resource, InsertResource,
-  Event, InsertEvent
+  Event, InsertEvent,
+  Taxonomy, InsertTaxonomy,
+  TaxonomicLevel, InsertTaxonomicLevel
 } from "@shared/schema";
 
 const MemoryStore = createMemoryStore(session);
@@ -153,6 +155,8 @@ export class MemStorage implements IStorage {
     this.sequences = new Map();
     this.resources = new Map();
     this.events = new Map();
+    this.taxonomies = new Map();
+    this.taxonomicLevels = new Map();
     
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000,
@@ -505,6 +509,81 @@ export class MemStorage implements IStorage {
 
   async deleteEvent(id: number): Promise<boolean> {
     return this.events.delete(id);
+  }
+
+  // Taxonomy methods
+  async getTaxonomies(teacherId?: number): Promise<Taxonomy[]> {
+    if (teacherId === undefined) {
+      // Renvoyer toutes les taxonomies
+      return Array.from(this.taxonomies.values());
+    } else {
+      // Renvoyer les taxonomies prédéfinies et celles créées par l'enseignant
+      return Array.from(this.taxonomies.values()).filter(
+        (taxonomy) => taxonomy.teacherId === teacherId || taxonomy.teacherId === null
+      );
+    }
+  }
+
+  async getTaxonomy(id: number): Promise<Taxonomy | undefined> {
+    return this.taxonomies.get(id);
+  }
+
+  async createTaxonomy(taxonomy: InsertTaxonomy): Promise<Taxonomy> {
+    const id = this.taxonomyIdCounter++;
+    const now = new Date();
+    const newTaxonomy: Taxonomy = { ...taxonomy, id, createdAt: now };
+    this.taxonomies.set(id, newTaxonomy);
+    return newTaxonomy;
+  }
+
+  async updateTaxonomy(id: number, taxonomyData: Partial<InsertTaxonomy>): Promise<Taxonomy | undefined> {
+    const existingTaxonomy = this.taxonomies.get(id);
+    if (!existingTaxonomy) return undefined;
+    
+    const updatedTaxonomy = { ...existingTaxonomy, ...taxonomyData };
+    this.taxonomies.set(id, updatedTaxonomy);
+    return updatedTaxonomy;
+  }
+
+  async deleteTaxonomy(id: number): Promise<boolean> {
+    // Supprimer également tous les niveaux taxonomiques associés
+    const levels = await this.getTaxonomicLevels(id);
+    for (const level of levels) {
+      await this.deleteTaxonomicLevel(level.id);
+    }
+    return this.taxonomies.delete(id);
+  }
+
+  // Taxonomic Level methods
+  async getTaxonomicLevels(taxonomyId: number): Promise<TaxonomicLevel[]> {
+    return Array.from(this.taxonomicLevels.values()).filter(
+      (level) => level.taxonomyId === taxonomyId
+    );
+  }
+
+  async getTaxonomicLevel(id: number): Promise<TaxonomicLevel | undefined> {
+    return this.taxonomicLevels.get(id);
+  }
+
+  async createTaxonomicLevel(level: InsertTaxonomicLevel): Promise<TaxonomicLevel> {
+    const id = this.taxonomicLevelIdCounter++;
+    const now = new Date();
+    const newLevel: TaxonomicLevel = { ...level, id, createdAt: now };
+    this.taxonomicLevels.set(id, newLevel);
+    return newLevel;
+  }
+
+  async updateTaxonomicLevel(id: number, levelData: Partial<InsertTaxonomicLevel>): Promise<TaxonomicLevel | undefined> {
+    const existingLevel = this.taxonomicLevels.get(id);
+    if (!existingLevel) return undefined;
+    
+    const updatedLevel = { ...existingLevel, ...levelData };
+    this.taxonomicLevels.set(id, updatedLevel);
+    return updatedLevel;
+  }
+
+  async deleteTaxonomicLevel(id: number): Promise<boolean> {
+    return this.taxonomicLevels.delete(id);
   }
 }
 

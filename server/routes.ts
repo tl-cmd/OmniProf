@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { setupAuth } from "./auth";
 import { storage } from "./storage";
 import { parseIcalToEvents, generateIcalFromEvents } from "./utils/ical";
+import { taxonomyUtils } from "./utils/taxonomyUtils";
 import { z } from "zod";
 import { 
   insertClassSchema,
@@ -13,12 +14,17 @@ import {
   insertSequenceSchema,
   insertResourceSchema,
   insertEventSchema,
+  insertTaxonomySchema,
+  insertTaxonomicLevelSchema,
   InsertEvent
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication routes
   setupAuth(app);
+  
+  // Initialize default taxonomies
+  await taxonomyUtils.initDefaultTaxonomies();
 
   // Middleware to check if user is authenticated
   const requireAuth = (req: Request, res: Response, next: Function) => {
@@ -350,6 +356,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const event = await storage.createEvent(validatedData);
       res.status(201).json(event);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({ message: "Données invalides", errors: err.errors });
+      }
+      throw err;
+    }
+  });
+
+  // Taxonomy routes
+  app.get("/api/taxonomies", requireAuth, async (req, res) => {
+    const teacherId = (req.user as any).id;
+    const taxonomies = await storage.getTaxonomies(teacherId);
+    res.json(taxonomies);
+  });
+
+  app.get("/api/taxonomies/:id/levels", requireAuth, async (req, res) => {
+    const taxonomyId = parseInt(req.params.id);
+    const taxonomy = await storage.getTaxonomy(taxonomyId);
+    
+    if (!taxonomy) {
+      return res.status(404).json({ message: "Taxonomie non trouvée" });
+    }
+    
+    // Vérifier si la taxonomie est accessible à l'utilisateur
+    // (taxonomies prédéfinies ou créées par l'utilisateur)
+    const teacherId = (req.user as any).id;
+    if (taxonomy.teacherId !== null && taxonomy.teacherId !== teacherId) {
+      return res.status(403).json({ message: "Accès refusé" });
+    }
+    
+    const levels = await storage.getTaxonomicLevels(taxonomyId);
+    res.json(levels);
+  });
+
+  app.post("/api/taxonomies", requireAuth, async (req, res) => {
+    try {
+      const teacherId = (req.user as any).id;
+      const validatedData = insertTaxonomySchema.parse({
+        ...req.body,
+        teacherId
+      });
+      
+      const taxonomy = await storage.createTaxonomy(validatedData);
+      res.status(201).json(taxonomy);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({ message: "Données invalides", errors: err.errors });
+      }
+      throw err;
+    }
+  });
+
+  app.post("/api/taxonomies/:id/levels", requireAuth, async (req, res) => {
+    try {
+      const taxonomyId = parseInt(req.params.id);
+      const taxonomy = await storage.getTaxonomy(taxonomyId);
+      
+      if (!taxonomy) {
+        return res.status(404).json({ message: "Taxonomie non trouvée" });
+      }
+      
+      // Vérifier si l'utilisateur est propriétaire de la taxonomie
+      const teacherId = (req.user as any).id;
+      if (taxonomy.teacherId !== teacherId) {
+        return res.status(403).json({ message: "Accès refusé" });
+      }
+      
+      const validatedData = insertTaxonomicLevelSchema.parse({
+        ...req.body,
+        taxonomyId
+      });
+      
+      const level = await storage.createTaxonomicLevel(validatedData);
+      res.status(201).json(level);
     } catch (err) {
       if (err instanceof z.ZodError) {
         return res.status(400).json({ message: "Données invalides", errors: err.errors });
