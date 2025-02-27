@@ -123,49 +123,70 @@ export const taxonomyUtils = {
     
     const competencesCielTaxonomyId = await this.createTaxonomyWithLevels(competencesCielTaxonomy, [
       {
-        name: "C01 - COMMUNIQUER EN SITUATION PROFESSIONNELLE (FRANÇAIS/ANGLAIS)",
+        name: "COMMUNIQUER EN SITUATION PROFESSIONNELLE (FRANÇAIS/ANGLAIS)",
         description: "CC8/CC9 - Renseigner les documents/Communiquer avec le client",
         level: 1,
+        code: "C01"
       },
       {
-        name: "C03 - PARTICIPER A UN PROJET",
-        description: "CC2/CC1 - Organiser la réalisation ou l'intervention/S'informer sur l'intervention ou sur la réalisation",
+        name: "S'INTÉGRER DANS UN COLLECTIF DE TRAVAIL",
+        description: "CC1 - S'informer sur l'intervention ou sur la réalisation",
         level: 2,
+        code: "C02"
       },
       {
-        name: "C04 - ANALYSER UNE STRUCTURE MATÉRIELLE ET LOGICIELLE",
-        description: "CC3 - Analyser et exploiter les données",
+        name: "PARTICIPER A UN PROJET",
+        description: "CC2 - Organiser la réalisation ou l'intervention",
         level: 3,
+        code: "C03"
       },
       {
-        name: "C06 - VALIDER LA CONFORMITÉ D'UNE INSTALLATION",
-        description: "CC6 - Mettre en service",
+        name: "ANALYSER UNE STRUCTURE MATÉRIELLE ET LOGICIELLE",
+        description: "CC3 - Analyser et exploiter les données",
         level: 4,
+        code: "C04"
       },
       {
-        name: "C07 - RÉALISER DES MAQUETTES ET PROTOTYPES",
-        description: "CC4 - Réaliser une installation ou une intervention",
+        name: "PRÉPARER UNE INSTALLATION",
+        description: "CC5 - Effectuer les opérations préalables",
         level: 5,
+        code: "C05"
       },
       {
-        name: "C08 - CODER",
-        description: "CC4 - Réaliser une installation ou une intervention",
+        name: "VALIDER LA CONFORMITÉ D'UNE INSTALLATION",
+        description: "CC6 - Mettre en service",
         level: 6,
+        code: "C06"
       },
       {
-        name: "C09 - INSTALLER LES ÉLÉMENTS D'UN SYSTÈME ÉLECTRONIQUE OU INFORMATIQUE",
+        name: "RÉALISER DES MAQUETTES ET PROTOTYPES",
         description: "CC4 - Réaliser une installation ou une intervention",
         level: 7,
+        code: "C07"
       },
       {
-        name: "C10 - EXPLOITER UN RÉSEAU INFORMATIQUE",
-        description: "CC5 - Effectuer les opérations préalables",
+        name: "CODER",
+        description: "CC4 - Réaliser une installation ou une intervention",
         level: 8,
+        code: "C08"
       },
       {
-        name: "C11 - MAINTENIR UN SYSTÈME ÉLECTRONIQUE OU RÉSEAU INFORMATIQUE",
-        description: "CC7 - Réaliser une opération de maintenance",
+        name: "INSTALLER LES ÉLÉMENTS D'UN SYSTÈME ÉLECTRONIQUE OU INFORMATIQUE",
+        description: "CC4 - Réaliser une installation ou une intervention",
         level: 9,
+        code: "C09"
+      },
+      {
+        name: "EXPLOITER UN RÉSEAU INFORMATIQUE",
+        description: "CC5 - Effectuer les opérations préalables",
+        level: 10,
+        code: "C10"
+      },
+      {
+        name: "MAINTENIR UN SYSTÈME ÉLECTRONIQUE OU RÉSEAU INFORMATIQUE",
+        description: "CC7 - Réaliser une opération de maintenance",
+        level: 11,
+        code: "C11"
       },
     ]);
 
@@ -177,7 +198,7 @@ export const taxonomyUtils = {
    */
   async createTaxonomyWithLevels(
     taxonomyData: InsertTaxonomy,
-    levels: Array<{ name: string; description: string; level: number }>
+    levels: Array<{ name: string; description: string; level: number; code?: string }>
   ): Promise<number> {
     // Créer la taxonomie
     const taxonomy = await storage.createTaxonomy(taxonomyData);
